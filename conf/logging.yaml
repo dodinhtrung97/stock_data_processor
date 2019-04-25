@@ -71,6 +71,10 @@ loggers:
             propagate: no
 
     web_scrapper:
+        controller:
+            level: INFO
+            handlers: [console]
+            propagate: no
         headline_sentiment_analysis:
             level: INFO
             handlers: [console]
