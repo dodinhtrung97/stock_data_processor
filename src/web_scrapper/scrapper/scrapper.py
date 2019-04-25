@@ -9,7 +9,7 @@ from ..headline_sentiment_analysis.sentiment_analyzer import *
 from ..utils.xpath import Xpath
 from ..utils.date_time import customTime
 from ..utils.ticker_symbol import generate_url, get_company_name_by_symbol
-from ..utils.config_setting import get_config
+from ..utils.config_setting import get_scrapper_config
 
 class scrapper:
 
@@ -29,7 +29,7 @@ class scrapper:
 	"""
 
 	LOGGER = logging.getLogger(__name__)
-	CONFIG = get_config()
+	CONFIG = get_scrapper_config()
 	
 	def __init__(self, 
 				 news_source,

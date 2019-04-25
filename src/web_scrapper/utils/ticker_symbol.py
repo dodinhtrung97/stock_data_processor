@@ -3,9 +3,9 @@ import configparser
 import os
 import logging
 
-from ..utils.config_setting import get_config
+from ..utils.config_setting import get_scrapper_config
 
-CONFIG = get_config()
+CONFIG = get_scrapper_config()
 LOGGER = logging.getLogger(__name__)
 
 def generate_url(news_source, ticker_symbol):

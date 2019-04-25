@@ -40,50 +40,54 @@ loggers:
         handlers: [console]
         propagate: no
 
-    controller.scrapper_controller:
-        level: DEBUG
-        handlers: [console]
-        propagate: no
+    pattern_matcher:
+        controller:
+            level: INFO
+            handlers: [console]
+            propagate: no
+        loader:
+            level: INFO
+            handlers: [console]
+            propagate: no
+        mather:
+            level: INFO
+            handlers: [console]
+            propagate: no
+        measurement:
+            level: INFO
+            handlers: [console]
+            propagate: no
+        processor:
+            level: INFO
+            handlers: [console]
+            propagate: no
+        runner:
+            level: INFO
+            handlers: [console]
+            propagate: no
+        utils:
+            level: INFO
+            handlers: [console]
+            propagate: no
 
-    headline_sentiment_analysis.sentiment_analyzer:
-        level: DEBUG
-        handlers: [console]
-        propagate: no
+    web_scrapper:
+        headline_sentiment_analysis:
+            level: INFO
+            handlers: [console]
+            propagate: no
+        scrapper:
+            level: INFO
+            handlers: [console]
+            propagate: no
+        utils:
+            level: INFO
+            handlers: [console]
+            propagate: no
+        websocket:
+            level: INFO
+            handlers: [console]
+            propagate: no
 
-    scrapper.scheduled_scrapper:
-        level: DEBUG
-        handlers: [console]
-        propagate: no
-
-    scrapper.scrapper:
-        level: DEBUG
-        handlers: [console]
-        propagate: no
-
-    scrapper.get_request:
-        level: DEBUG
-        handlers: [console]
-        propagate: no
-
-    utils.date_time:
-        level: DEBUG
-        handlers: [console]
-        propagate: no
-
-    utils.ticker_symbol:
-        level: DEBUG
-        handlers: [console]
-        propagate: no
-
-    utils.xpath:
-        level: DEBUG
-        handlers: [console]
-        propagate: no
-
-    websocket.ws_server:
-        level: INFO
-        handlers: [console]
-        propagate: no
 root:
     level: INFO
     handlers: [console, info_file_handler, error_file_handler]

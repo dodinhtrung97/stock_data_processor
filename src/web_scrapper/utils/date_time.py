@@ -4,11 +4,11 @@ import configparser, os
 import calendar
 
 from dateutil.parser import *
-from ..utils.config_setting import get_config
+from ..utils.config_setting import get_scrapper_config
 
 class customTime:
 	
-	CONFIG = get_config()
+	CONFIG = get_scrapper_config()
 	LOGGER = logging.getLogger(__name__)
 
 	def __init__(self, news_source, arbitrary_time):

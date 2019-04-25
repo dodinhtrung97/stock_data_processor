@@ -7,12 +7,12 @@ import json
 import threading
 
 from ..scrapper.scrapper import scrapper
-from ..utils.config_setting import get_config
+from ..utils.config_setting import get_scrapper_config
 
 class automatedScrapper():
 
 	LOGGER = logging.getLogger(__name__)
-	CONFIG = get_config()
+	CONFIG = get_scrapper_config()
 
 	def __init__(self):
 		self.__ticker_symbols = set()

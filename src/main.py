@@ -9,11 +9,14 @@ import threading
 from web_scrapper.utils.config_setting import *
 from web_scrapper.scrapper.scrapper import scrapper
 from web_scrapper.controller.scrapper_controller import scrapper_controller
+from pattern_matcher.controller.pattern_matcher_controller import pattern_matcher_controller
 from web_scrapper.websocket.ws_server import *
 
 app = Flask(__name__)
 
-CONFIG = get_config()
+# Setup logging config
+setup_logging()
+CONFIG = get_scrapper_config()
 LOGGER = logging.getLogger(__name__)
 
 def start_server(is_logging):
@@ -23,6 +26,7 @@ def start_server(is_logging):
 
 def start_api_server():
 	app.register_blueprint(scrapper_controller, url_prefix='/api/v0/scraper')
+	app.register_blueprint(pattern_matcher_controller, url_prefix='/api/v0/matcher')
 	app.run(host=CONFIG['SERVER']['HOST'], 
 			port=CONFIG['SERVER']['PORT'], 
 			threaded=True,
@@ -47,9 +51,6 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Stock news webscrapper & sentiment analysis')
 	parser.add_argument('--logging', metavar='LOGGING', default=0, type=int, help='Log scrapping outputs into logs/*.json')
 	args = parser.parse_args()
-
-	# Setup logging config
-	run_logging_config()
 
 	# Start service
 	is_logging = bool(args.logging)
