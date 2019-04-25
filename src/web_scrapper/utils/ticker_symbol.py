@@ -3,7 +3,7 @@ import configparser
 import os
 import logging
 
-from utils.config_setting import get_config
+from ..utils.config_setting import get_config
 
 CONFIG = get_config()
 LOGGER = logging.getLogger(__name__)

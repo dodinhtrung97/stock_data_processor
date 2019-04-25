@@ -2,5 +2,6 @@ build/
 dist/
 news_headline_scrapper.egg-info/
 src/*/__pycache__
+src/*/*/__pycache__
 logs/*
 conf/config.ini

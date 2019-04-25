@@ -1,6 +1,6 @@
 import logging
 
-from scrapper.scrapper import scrapper
+from ..scrapper.scrapper import scrapper
 from flask import Blueprint, abort, request, jsonify, Response
 from flask_restful import reqparse
 

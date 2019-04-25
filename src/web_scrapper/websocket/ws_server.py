@@ -10,8 +10,8 @@ import logging
 import os
 import configparser
 
-from scrapper.automated_scrapper import automatedScrapper
-from utils.config_setting import get_config 
+from ..scrapper.automated_scrapper import automatedScrapper
+from ..utils.config_setting import get_config 
 
 CONFIG = get_config()
 LOGGER = logging.getLogger(__name__)

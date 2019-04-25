@@ -1,6 +1,7 @@
 from textblob import TextBlob
-from utils.ticker_symbol import *
 import logging
+
+from ..utils.ticker_symbol import *
 
 LOGGER = logging.getLogger(__name__)
 

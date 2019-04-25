@@ -4,7 +4,7 @@ import configparser, os
 import calendar
 
 from dateutil.parser import *
-from utils.config_setting import get_config
+from ..utils.config_setting import get_config
 
 class customTime:
 	

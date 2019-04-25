@@ -6,11 +6,10 @@ import signal
 import tornado
 import threading
 
-from utils.config_setting import *
-from scrapper.scrapper import scrapper
-from dateutil.parser import *
-from controller.scrapper_controller import scrapper_controller
-from websocket.ws_server import *
+from web_scrapper.utils.config_setting import *
+from web_scrapper.scrapper.scrapper import scrapper
+from web_scrapper.controller.scrapper_controller import scrapper_controller
+from web_scrapper.websocket.ws_server import *
 
 app = Flask(__name__)
 

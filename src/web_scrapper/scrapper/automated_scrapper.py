@@ -6,8 +6,8 @@ import configparser
 import json
 import threading
 
-from scrapper.scrapper import scrapper
-from utils.config_setting import get_config
+from ..scrapper.scrapper import scrapper
+from ..utils.config_setting import get_config
 
 class automatedScrapper():
 
