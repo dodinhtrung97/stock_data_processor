@@ -12,6 +12,8 @@ from web_scrapper.controller.scrapper_controller import scrapper_controller
 from pattern_matcher.controller.pattern_matcher_controller import pattern_matcher_controller
 from web_scrapper.websocket.ws_server import *
 
+from web_scrapper.sentiment_analyzer.analyzer import headlineAnalyzer
+
 app = Flask(__name__)
 
 # Setup logging config
@@ -55,3 +57,7 @@ if __name__ == "__main__":
 	# Start service
 	is_logging = bool(args.logging)
 	start_server(is_logging)
+
+# if __name__ == "__main__":
+# 	a = headlineAnalyzer("InvestorsObserver releases stock and option data on Apple, AMD, Progressive, Roku, and Snap Inc.", "apple", True)
+# 	a.analyze()

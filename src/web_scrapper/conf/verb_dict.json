@@ -1,0 +1,26 @@
+{
+    "acquire": {
+        "value": "+++",
+        "direction": "right"
+    },
+    "win": {
+        "value": "++",
+        "direction": "left"
+    },
+    "buy": {
+        "value": "+++",
+        "direction": "right"
+    },
+    "raise": {
+        "value": "++",
+        "direction": "left"
+    },
+    "miss": {
+        "value": "--",
+        "direction": "left"
+    },
+    "downgrade": {
+        "value": "--",
+        "direction": "left"
+    }
+}

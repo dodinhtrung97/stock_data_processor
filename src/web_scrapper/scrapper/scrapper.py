@@ -5,7 +5,7 @@ import time
 from bs4 import BeautifulSoup
 
 from .get_requests import get_html_response
-from ..headline_sentiment_analysis.sentiment_analyzer import *
+from ..sentiment_analyzer.analyzer import headlineAnalyzer
 from ..utils.xpath import Xpath
 from ..utils.date_time import customTime
 from ..utils.ticker_symbol import generate_url, get_company_name_by_symbol
@@ -91,9 +91,10 @@ class scrapper:
 			publish_date = self.find_extra_element_by_condition(child, self.date_pattern) if self.date_pattern is not None else None
 			publish_date = publish_date.text.strip()
 
-			direct_headline = is_direct_headline(headline, self.__company_name)
-			polarity_score = score_headline(headline) if self.require_sentiment else (None, None)
-			
+			(polarity_score, direct_headline) = headlineAnalyzer(headline=headline,
+																 company_name=self.__company_name,
+																 require_sentiment=self.require_sentiment).analyze()
+	
 			# Format date
 			publish_date_epoch = customTime(news_source=self.news_source, arbitrary_time=publish_date).to_epoch_time() if publish_date is not None else None
 
