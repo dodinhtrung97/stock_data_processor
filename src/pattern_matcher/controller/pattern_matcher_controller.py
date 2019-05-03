@@ -4,17 +4,18 @@ import os
 
 from ..runner.spearman_runner import SpearManRunner
 from ..runner.pearson_runner import PearsonRunner
-from ..utils.config_setting import *
+from ..conf.app_conf import *
 from flask import Blueprint, request
 
 logger = logging.getLogger(__name__)
 pattern_matcher_controller = Blueprint('pattern_matcher_controller', __name__, template_folder='controller')
 
 def runner_init(): 
+    conf_file = os.path.join(os.path.dirname(__file__), '..', 'conf', 'conf.json')
     # Initialize a runner
     logger.info('Initializing application ...')
     # read conf
-    conf = getconf(logger)
+    conf = getconf(conf_file, logger)
     # init runner
     meaure_type = conf['measurement']['type'].lower()
     global runner

@@ -32,64 +32,64 @@ handlers:
 loggers:
     urllib3:
         level: ERROR
-        handlers: [console]
+        handlers: [console, error_file_handler]
         propagate: no
 
     chardet:
         level: ERROR
-        handlers: [console]
+        handlers: [console, error_file_handler]
         propagate: no
 
     pattern_matcher:
         controller:
             level: INFO
-            handlers: [console]
+            handlers: [console, info_file_handler]
             propagate: no
         loader:
             level: INFO
-            handlers: [console]
+            handlers: [console, info_file_handler]
             propagate: no
-        mather:
+        matcher:
             level: INFO
-            handlers: [console]
+            handlers: [console, info_file_handler]
             propagate: no
         measurement:
             level: INFO
-            handlers: [console]
+            handlers: [console, info_file_handler]
             propagate: no
         processor:
             level: INFO
-            handlers: [console]
+            handlers: [console, info_file_handler]
             propagate: no
         runner:
             level: INFO
-            handlers: [console]
+            handlers: [console, info_file_handler]
             propagate: no
-        utils:
+        conf:
             level: INFO
-            handlers: [console]
+            handlers: [console, info_file_handler]
             propagate: no
 
     web_scrapper:
         controller:
             level: INFO
-            handlers: [console]
+            handlers: [console, info_file_handler]
             propagate: no
         headline_sentiment_analysis:
             level: INFO
-            handlers: [console]
+            handlers: [console, info_file_handler]
             propagate: no
         scrapper:
             level: INFO
-            handlers: [console]
+            handlers: [console, info_file_handler]
             propagate: no
         utils:
             level: INFO
-            handlers: [console]
+            handlers: [console, info_file_handler]
             propagate: no
         websocket:
             level: INFO
-            handlers: [console]
+            handlers: [console, info_file_handler]
             propagate: no
 
 root:

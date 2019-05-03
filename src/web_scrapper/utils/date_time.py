@@ -1,7 +1,7 @@
 import datetime
 import logging
 import configparser, os
-import calendar
+from calendar import monthrange
 
 from dateutil.parser import *
 from ..utils.config_setting import get_scrapper_config
@@ -45,6 +45,10 @@ class customTime:
 			except Exception as e:
 				date_time = datetime.datetime.now()
 				self.LOGGER.error("Failed to parse arbitrary time: {}. Exception {}. Assume is recent news".format(self.__arbitrary_time, e))
+		except Exception as e:
+			date_time = datetime.datetime.now()
+			self.LOGGER.error("Failed to parse arbitrary time: {}. Exception {}. Assume is recent news".format(self.__arbitrary_time, e))
+
 
 		self.epoch_time = date_time.timestamp()
 		return date_time.timestamp()
@@ -122,13 +126,13 @@ class customTime:
 		if real_time_dict['minute'] < 0:
 			real_time_dict['minute'] += 60
 			real_time_dict['hour'] -= 1
-		if real_time_dict['hour'] < 0:
+		if real_time_dict['hour'] <= 0:
 			real_time_dict['hour'] += 24
 			real_time_dict['day'] -= 1
-		if real_time_dict['day'] < 0:
-			real_time_dict['day'] += calendar(publish_time.year, publish_time.month)[1]
+		if real_time_dict['day'] <= 0:
+			real_time_dict['day'] += monthrange(publish_time.year, (publish_time.month - 1))[1]
 			real_time_dict['month'] -= 1
-		if real_time_dict['month'] < 0:
+		if real_time_dict['month'] <= 0:
 			real_time_dict['month'] += 12
 			real_time_dict['year'] -= 1
 

@@ -17,7 +17,7 @@ def setup_logging():
 def get_scrapper_config():
 	config = configparser.ConfigParser()
 	dir_path = os.path.dirname(os.path.realpath(__file__))
-	path = os.path.join(dir_path, '..', '..', '..', 'conf', 'config.ini')
+	path = os.path.join(dir_path, '..', 'conf', 'config.ini')
 	config.read(path)
 
 	return config

@@ -93,7 +93,7 @@ class scrapper:
 
 			direct_headline = is_direct_headline(headline, self.__company_name)
 			polarity_score = score_headline(headline) if self.require_sentiment else (None, None)
-
+			
 			# Format date
 			publish_date_epoch = customTime(news_source=self.news_source, arbitrary_time=publish_date).to_epoch_time() if publish_date is not None else None
 

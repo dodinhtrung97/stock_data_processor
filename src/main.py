@@ -21,8 +21,8 @@ LOGGER = logging.getLogger(__name__)
 
 def start_server(is_logging):
 	start_websocket_server(is_logging)
-	api_server_thread = threading.Thread(target=start_api_server)
-	api_server_thread.start()
+	backend_api_thread = threading.Thread(target=start_api_server)
+	backend_api_thread.start()
 
 def start_api_server():
 	app.register_blueprint(scrapper_controller, url_prefix='/api/v0/scraper')

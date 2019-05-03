@@ -10,9 +10,9 @@ class SpearManRunner(Runner):
 
     def __init__(self, conf, logger=None):
         self.logger = logger or logging.getLogger(__name__)
-        if bool(conf['measurement']['multiprocessing']) is True:
+        if conf['measurement']['multiprocessing'] is True:
             self.__processor = MultiProcessingMeasurementProcessor()
-        elif bool(conf['measurement']['threading']) is True:
+        elif conf['measurement']['threading'] is True:
             self.__processor = MultiThreadingMeasurementProcessor()
         else:
             raise Exception('Unable to read conf for processor type')
