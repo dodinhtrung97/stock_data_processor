@@ -232,7 +232,6 @@ Python 3
 ### Build Project
 
 ```
-py setup.py install
-py setup.py build
+pip install -r requirement.txt
 py src\main.py
 ```
