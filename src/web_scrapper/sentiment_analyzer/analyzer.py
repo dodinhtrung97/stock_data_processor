@@ -23,11 +23,27 @@ class headlineAnalyzer():
 		self.__is_passive_voice = False
 
 	def analyze(self):
-		# self.find_effective_verb()
-		# self.LOGGER.info("Verb: {}, VerbPred: {}, VerdSucc: {}, IsPassive: {}".format(self.__verb, self.__verb_predecessor, self.__verb_predecessor, self.__is_passive_voice))
-		return (self.score_headline(), self.is_direct_headline()) if self.__require_sentiment else (None, self.is_direct_headline())
+		score = self.score_headline_naive()
 
-	def score_headline(self):
+		# Setup evironment for headline analysis
+		self.find_effective_verb()
+
+		if self.__verb != '' and self.__verb[0] in self.__verb_dict:
+			verb = self.__verb[0]
+			potential_score = self.__verb_dict[verb]['value']
+
+			# Verb is effective on company name if company name is on its right hand side
+			is_effective_direction_on_verb_rhs = True if self.__verb_dict[verb]['direction'] == 'right' else False
+			# Noun on on verb's effective direction
+			# Flip noun's position if phrase's voicing is passive
+			is_noun_on_verb_effective_direction = self.__is_noun_on_verb_rhs if not self.__is_passive_voice else not self.__is_noun_on_verb_rhs
+
+			if is_noun_on_verb_effective_direction == is_effective_direction_on_verb_rhs:
+				score = potential_score
+
+		return (score, self.is_direct_headline()) if self.__require_sentiment else (None, self.is_direct_headline())
+
+	def score_headline_naive(self):
 		"""
 		Determine subjectivity and polarity scores of a statement
 		Subjectivity [0, 1] where 0 is objective and 1 is subjective
@@ -46,14 +62,6 @@ class headlineAnalyzer():
 		shortened_company_name = self.__company_name.split(' ')[0].lower()
 		return shortened_company_name in self.__headline.lower()
 
-	def polarity_score_to_text(self, score):
-		"""
-		Naive conversion of polarity score to text
-		"""
-		if score < 0.0: return "-"
-		elif score == 0.0: return "0"
-		else: return "+"
-
 	def find_effective_verb(self):
 		"""
 		Find verb relative to company name in headline
@@ -70,7 +78,7 @@ class headlineAnalyzer():
 		# Find company name's index in headline
 		company_name_index = 0
 		while company_name_index < len(disected_headline):
-			if disected_headline[company_name_index] != shortened_company_name:
+			if disected_headline[company_name_index][0] != shortened_company_name:
 				company_name_index += 1
 			else: break
 
@@ -78,10 +86,8 @@ class headlineAnalyzer():
 		# Or company name is not precceeded by the word 'by'
 		# Else loop left
 		# Look for a verb that is not 'be'
-		if company_name_index == 0 or disected_headline[company_name_index - 1][1] != 'IN': 
-			self.LOGGER.info(disected_headline[company_name_index - 1])
-			self.find_verb_on_rhs(disected_headline, company_name_index)
-		else: self.find_verb_on_lhs(disected_headline, company_name_index)
+		if company_name_index != 0 or disected_headline[company_name_index - 1][1] == 'IN': self.find_verb_on_lhs(disected_headline, company_name_index)
+		else: self.find_verb_on_rhs(disected_headline, company_name_index)
 
 		# Determine if effective phrase is passive
 		self.is_passive_voice()
@@ -94,13 +100,13 @@ class headlineAnalyzer():
 		word_index = company_name_index + 1
 
 		while word_index < len(disected_headline):
-			word_with_tag = disected_headline[word_index]
+			word, tag = disected_headline[word_index]
 
 			if ('VB' in tag) and (word != 'be'):
 				pred_word_with_tag = disected_headline[word_index - 1]
 				succ_word_with_tag = disected_headline[word_index + 1]
 
-				self.__verb = word_with_tag
+				self.__verb = (word, tag)
 				self.__verb_predecessor = pred_word_with_tag
 				self.__verb_successor = succ_word_with_tag
 				break
@@ -115,13 +121,13 @@ class headlineAnalyzer():
 		word_index = company_name_index - 1
 
 		while word_index > 0:
-			word_with_tag = disected_headline[word_index]
+			word, tag = disected_headline[word_index]
 
 			if ('VB' in tag) and (word != 'be'):
 				pred_word_with_tag = disected_headline[word_index - 1]
 				succ_word_with_tag = disected_headline[word_index + 1]
 
-				self.__verb = word_with_tag
+				self.__verb = (word, tag)
 				self.__verb_predecessor = pred_word_with_tag
 				self.__verb_successor = succ_word_with_tag
 				break
@@ -135,8 +141,9 @@ class headlineAnalyzer():
 		Eg: A is acquired by B
 		"""
 		if self.__verb_successor != '' and self.__verb_predecessor != '':
-			return self.__verb_successor[1] == 'IN' or self.__verb_predecessor[1] == 'VB'
-		return False
+			self.__is_passive_voice = (self.__verb_successor[1] == 'IN' or self.__verb_predecessor[1] == 'VB')
+		else:
+			self.__is_passive_voice = False
 
 	def disect_headline(self):
 		"""
@@ -150,3 +157,11 @@ class headlineAnalyzer():
 			disected_headline.append((word_2, pos))
 
 		return disected_headline
+
+	def polarity_score_to_text(self, score):
+		"""
+		Naive conversion of polarity score to text
+		"""
+		if score < 0.0: return "-"
+		elif score == 0.0: return "0"
+		else: return "+"
