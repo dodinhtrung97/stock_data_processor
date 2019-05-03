@@ -24,26 +24,22 @@ def scrape_url(news_source, ticker_symbol):
 
 	request_content = request.get_json()
 	
-	try:
-		walking_pattern_xpath = request_content['walkingPattern']
-		headline_pattern_xpath = request_content['headlinePattern']
-		date_pattern_xpath = request_content['datePattern'] if get_date else None
+	walking_pattern_xpath = request_content['walkingPattern']
+	headline_pattern_xpath = request_content['headlinePattern']
+	date_pattern_xpath = request_content['datePattern'] if get_date else None
 
-		web_scrapper = scrapper(news_source=news_source,
-								ticker_symbol=ticker_symbol, 
-								walking_pattern_xpath=walking_pattern_xpath, 
-								headline_pattern_xpath=headline_pattern_xpath,
-								within_hours=within_hours, 
-								date_pattern_xpath=date_pattern_xpath, 
-								require_sentiment=get_sentiment)
+	web_scrapper = scrapper(news_source=news_source,
+							ticker_symbol=ticker_symbol, 
+							walking_pattern_xpath=walking_pattern_xpath, 
+							headline_pattern_xpath=headline_pattern_xpath,
+							within_hours=within_hours, 
+							date_pattern_xpath=date_pattern_xpath, 
+							require_sentiment=get_sentiment)
 
-		web_scrapper.scrape()
-		response = jsonify({"resultSet": web_scrapper.results}), 200
-		
-		return response
-	except Exception as e:
-		LOGGER.error("Bad Request with exception: {}".format(e))
-		return jsonify({"error": "Bad request"}), 400
+	web_scrapper.scrape()
+	response = jsonify({"resultSet": web_scrapper.results}), 200
+	
+	return response
 
 @scrapper_controller.route('/get_company_name/<ticker_symbol>', methods=['GET'])
 def get_company_name_by_ticker_symbol(ticker_symbol):
