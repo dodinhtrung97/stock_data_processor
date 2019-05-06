@@ -8,12 +8,6 @@ def is_direct_headline_test(sentence, ticker_symbol, company_name):
     """
     Extraction of noun phrases from sentence
     Find all nouns in input sentence and check those against company_name
-
-    Args:
-        sentence (String): sentence
-    
-    Returns:
-        List[]: List of nouns 
     """
     blob = TextBlob(sentence)
     noun_phrases = blob.noun_phrases
@@ -28,13 +22,6 @@ def is_direct_headline_naive_test(sentence, ticker_symbol, company_name):
     """
     Naive extraction of noun phrases from sentence
     Takes first letter of company name retrieved from get_company_name_by_symbol
-    
-    Args:
-        sentence (TYPE): Description
-        ticker_symbol (TYPE): Description
-    
-    Returns:
-        TYPE: Description
     """
     shortened_company_name = company_name.split(' ')[0].lower()
 

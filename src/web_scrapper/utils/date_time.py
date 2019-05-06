@@ -152,7 +152,7 @@ class customTime:
         parsed_arbitrary_time = ''
         letter_index = 0
 
-        while letter_index < len(string):
+        for letter_index, letter in enumerate(string):
             letter = string[letter_index]
             letter_type = None
 
@@ -167,6 +167,5 @@ class customTime:
                 previous_letter_type = letter_type
 
             parsed_arbitrary_time += str(letter)
-            letter_index += 1
 
         return parsed_arbitrary_time

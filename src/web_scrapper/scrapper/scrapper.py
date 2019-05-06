@@ -175,10 +175,7 @@ class scrapper:
         Args:
             reduced_html: Current reduced html to walk from
             pattern (TYPE): Description
-        
-        Returns:
-            TYPE: Description
-        
+
         Raises:
             SyntaxError: Pattern length is not 2 or 3
         """
@@ -196,9 +193,6 @@ class scrapper:
         
         Args:
             publish_time (TYPE): News publish time
-        
-        Returns:
-            TYPE: Description
         """
         current_time = time.time()
         return float(self.within_hours) >= (current_time - publish_time)/3600
