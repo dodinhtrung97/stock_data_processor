@@ -25,19 +25,29 @@ class backendServer():
         self.__logging = bool(args.logging)
 
         self.__controller_dict = {}
+        self.__service_dict = {}
 
         # Build controller dict
         self.controller_dict_init()
+        self.service_dict_init()
 
     def start(self):
         """
         Start main server
         """
-        if self.__start_websocket:
-            self.start_websocket_server()
+        service_threadpool = []
+        
+        for service in self.__service_dict:
+            if self.__service_dict[service]['activate'] and self.__service_dict[service]['threaded']:
+                service_thread = threading.Thread(target=self.__service_dict[service]['operation'])
+                service_threadpool.append(service_thread)
 
-        backend_api_thread = threading.Thread(target=self.start_api_server)
-        backend_api_thread.start()
+            elif self.__service_dict[service]['activate']:
+                service = self.__service_dict[service]['operation']
+                service()
+
+        for threaded_service in service_threadpool:
+            threaded_service.start()
 
     def start_api_server(self):
         """
@@ -74,6 +84,25 @@ class backendServer():
         scrapper_thread.start()
         tornado_thread.start()
 
+    def service_dict_init(self):
+        """
+        Initialize a service dictionary that determines what services will be ran
+        """
+        self.__service_dict = {
+            'websocket': {
+                'operation': self.start_websocket_server,
+                'args': [],
+                'activate': self.__start_websocket,
+                'threaded': False
+            },
+            'api': {
+                'operation': self.start_api_server,
+                'args': [],
+                'activate': self.__start_scraper or self.__start_matcher,
+                'threaded': True
+            }
+        }
+
     def controller_dict_init(self):
         """
         Initialize a controller dictionary that determines what blueprints will be registered into Flask Server
@@ -83,22 +112,19 @@ class backendServer():
         from web_scrapper.controller.scrapper_controller import scrapper_controller
         from pattern_matcher.controller.pattern_matcher_controller import pattern_matcher_controller
 
-        controller_dict = {
-            'scrapper_controller': 
-                {
+        self.__controller_dict = {
+            'scrapper_controller': {
                     'controller': scrapper_controller,
                     'url_prefix': self.CONFIG['SERVER']['SCRAPER_URL_PREFIX'],
                     'activate': self.__start_scraper
-                },
-            'matcher_controller':
-                {
+            },
+            'matcher_controller': {
                     'controller': pattern_matcher_controller,
                     'url_prefix': self.CONFIG['SERVER']['MATCHER_URL_PREFIX'],
                     'activate': self.__start_matcher
-                }
+            }
         }
 
-        self.__controller_dict = controller_dict
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Trade Advisor')
