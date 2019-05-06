@@ -31,7 +31,7 @@ class headlineAnalyzer():
         self.find_effective_verb()
 
         # Determine if effective phrase is passive
-        self.is_passive_voice()
+        self.determine_voicing_passitivity()
 
         if self.__verb and self.__verb.word in self.__verb_dict:
             verb = self.__verb.word
@@ -85,14 +85,15 @@ class headlineAnalyzer():
         # Find company name's index in headline
         company_name_index = 0
         for company_name_index, company_name in enumerate(disected_headline):
-            if disected_headline[company_name_index][0] == shortened_company_name: break
+            if disected_headline[company_name_index].word == shortened_company_name: break
 
         # Loop right if company name is at the beginning of the sentence
         # Or company name is not precceeded by the word 'by'
         # Else loop left
         # Look for a verb that is not 'be'
-        if company_name_index != 0 or disected_headline[company_name_index - 1][1] == 'IN': self.find_verb_on_lhs(disected_headline, company_name_index)
-        else: self.find_verb_on_rhs(disected_headline, company_name_index)
+        if company_name_index == 0 or (disected_headline[company_name_index-1].tag != 'IN' and 'VB' not in disected_headline[company_name_index-1].tag):
+            self.find_verb_on_rhs(disected_headline, company_name_index)
+        else: self.find_verb_on_lhs(disected_headline, company_name_index)
 
     def find_verb_on_rhs(self, disected_headline, company_name_index):
         """
@@ -100,17 +101,17 @@ class headlineAnalyzer():
         """
         self.__is_noun_on_verb_rhs = False
 
-        for word_index, word in enumerate(disected_headline, start=company_name_index):
+        for word_index, word in enumerate(disected_headline[company_name_index:], start=company_name_index):
             word, tag = word
             word_tuple = namedtuple("Word", ['word', 'tag'])
 
             if ('VB' in tag) and (word != 'be'):
-                pred_word_with_tag = disected_headline[word_index - 1]
-                succ_word_with_tag = disected_headline[word_index + 1]
+                pred_word = disected_headline[word_index - 1]
+                succ_word = disected_headline[word_index + 1]
 
                 self.__verb = word_tuple(word=word, tag=tag)
-                self.__verb_predecessor = word_tuple(word=pred_word_with_tag[0], tag=pred_word_with_tag[1])
-                self.__verb_successor = word_tuple(word=succ_word_with_tag[0], tag=succ_word_with_tag[1])
+                self.__verb_predecessor = word_tuple(word=pred_word.word, tag=pred_word.tag)
+                self.__verb_successor = word_tuple(word=succ_word.word, tag=succ_word.tag)
                 break
 
     def find_verb_on_lhs(self, disected_headline, company_name_index):
@@ -119,20 +120,20 @@ class headlineAnalyzer():
         """
         self.__is_noun_on_verb_rhs = True
 
-        for word_index, word in reversed_enumerate(disected_headline, start=company_name_index):
+        for word_index, word in reversed_enumerate(disected_headline[:company_name_index], start=company_name_index):
             word, tag = word
             word_tuple = namedtuple("Word", ['word', 'tag'])
 
             if ('VB' in tag) and (word != 'be'):
-                pred_word_with_tag = disected_headline[word_index - 1]
-                succ_word_with_tag = disected_headline[word_index + 1]
+                pred_word = disected_headline[word_index - 1]
+                succ_word = disected_headline[word_index + 1]
 
                 self.__verb = word_tuple(word=word, tag=tag)
-                self.__verb_predecessor = word_tuple(word=pred_word_with_tag[0], tag=pred_word_with_tag[1])
-                self.__verb_successor = word_tuple(word=succ_word_with_tag[0], tag=succ_word_with_tag[1])
+                self.__verb_predecessor = word_tuple(word=pred_word.word, tag=pred_word.tag)
+                self.__verb_successor = word_tuple(word=succ_word.word, tag=succ_word.tag)
                 break
 
-    def is_passive_voice(self):
+    def determine_voicing_passitivity(self):
         """
         Determine if a phrase is passively voiced
         If 'by' succeeds or <to_be> preceeds <verb> then phrase is passive
@@ -152,12 +153,13 @@ class headlineAnalyzer():
 
         blob = TextBlob(self.__headline)
         for word, tag in blob.tags:
+            word_tuple = namedtuple('Word', ['word', 'tag'])
             word_2 = WordNetLemmatizer().lemmatize(word, 'v')
             # Some words can be both noun AND verd (eg: misses)
             # If a word can be lemmatized into its base form, assume it is VB (Verb in base form)
             # Unless said word is already a verb (eg: VBG)
             # Eg: misses -> miss
-            disected_headline.append((word_2, 'VB')) if 'VB' not in tag and word_2 != word else disected_headline.append((word_2, tag))
+            disected_headline.append(word_tuple(word=word_2, tag='VB')) if 'VB' not in tag and word_2 != word else disected_headline.append(word_tuple(word=word_2, tag=tag))
 
         return disected_headline
 

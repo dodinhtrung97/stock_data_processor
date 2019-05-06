@@ -30,8 +30,11 @@ if __name__ == "__main__":
                          "Apple acquiring Amazon, also an asteroid is coming to visit tomorrow",
                          "Apple won $1b in casino investment",
                          "Apple acquiring Amazon, in other news, I won a bet yesterday for $500",
-                         "I bought a cat and Amazon is buying Apple"]
+                         "I bought a cat and Amazon bought Apple",
+                         "I bought a cat and Apple bought Amazon"]
                      }
+
+    headline_dict_2 = {"Apple": ["Amazon acquires Apple"]}
 
     for ticker in headline_dict:
         for headline in headline_dict[ticker]:
