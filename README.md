@@ -235,14 +235,14 @@ Python 3
 Create virtual env. Docs [here](https://packaging.python.org/guides/installing-using-pip-and-virtualenv/#creating-a-virtualenv) 
 ```
 pip install -r requirement.txt
-py src\main.py [-h] [--websocket WEBSOCKET] [--scraper SCRAPPER]
+py src\app.py [-h] [--websocket WEBSOCKET] [--scraper SCRAPPER]
                [--matcher MATCHER] [--logging LOGGING]
 ```
 
 Where each optional parameter takes in an integer of `{0, 1}` signifying whether or not a module will be started.
 
 ```
-py src\main.py --help
+py src\app.py --help
 ```
 
 For a more detailed description
