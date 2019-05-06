@@ -1,22 +1,61 @@
-# News Headline Scrapper
+# Trade Advisor
 
-Scrapes news headlines and information attached to said headlines
+### Description
 
-Applies sentiment analysis on said headlines and determine their sentiment polarity
+Includes 3 modules: <br/>
 
-Change `conf/config_template.ini` appropriately and rename the file to `config.ini` before running
+- Pattern Matcher: <br/>
+    - Assumes a set of data (ticker specified) exists
+    - Find tickers with similar market patterns to provided pattern
+- Web Scraper: <br/>
+    - Scrapes headline data from `benzinga` and `cnbc`
+    - Applies sentiment analysis on said data, outputing a score that is one of `[---, --, -, 0, +, ++, +++]`
+- Price Predictor: <br/>
+    - TBD
+
+### Logger
+
+Either in `/conf/logging.yaml` or set a `LOG_CFG` environment variable
+
+## Pattern Matcher
+
+### Application Configuration: `pattern_matcher/conf/conf.json`
+
+```
+    {
+        "input": {
+            "dir": "location_of_data_dir",
+            "format": "format_of_files",
+            "recursive": "Default is False"
+        },
+        "measure_type": "Either spearman or pearson measurement"
+    }
+```
+
+### Usage:
+- Default mode:
+    - Default application configs at `pattern_matcher/conf/conf.json`
+    - Default logging configs at `/conf/logging.yaml`
+- Custom mode:
+    - Change application's configurations in file `pattern_matcher/conf/conf.json`
+    - Change logging's configurations in either file `/conf/logging.yaml` or create a new yaml logging conf file and set env variable `LOG_CFG` to the location of that file.
+    - Run command: `LOG_CFG=my_custom_logging.yaml python app.py`
+
+## Web Scraper
+
+Change `web_scraper/conf/config_template.ini` appropriately and rename the file to `config.ini` before running
 
 Scope may expand in future versions
 
-## Mode
+### Mode
 
 Supports a backend API mode and an auto scrapping mode <br/>
 
-See `Build Project`
+See `Usage`
 
-### Automated Scrapper
+### Automated Scraper
 
-Starts an automated web scrapper on the `sites` and `walking_patterns` defined in `conf/config.ini`
+Starts an automated web scraper on the `sites` and `walking_patterns` defined in `web_scraper/conf/config.ini`
 
 Communicate with clients via a websocket connection established upon connection request <br/>
 
@@ -62,36 +101,21 @@ Upon news retrieved, the server shall only send pieces of news that have not pre
       },
     ],
     "BENZINGA_HEADLINES": [
-      {
-        "source": "BENZINGA",
-        "url": "https://www.benzinga.com/news/19/04/13560968/todays-pickup-amazon-ceasing-chinese-operations-due-to-insurmountable-domestic-rivalry",
-        "headline": "Today's Pickup: Amazon Ceasing Chinese Operations Due To Insurmountable Domestic Rivalry",
-        "date": 1555604119.0,
-        "direct": false,
-        "score": -0.041666666666666664
-      },
+        ...
     ],
     "BENZINGA_PARTNER": [
-      {
-        "source": "BENZINGA",
-        "url": "https://talkmarkets.com/content/an-indecisive-market?post=218552",
-        "headline": "An Indecisive Market",
-        "date": 1555869600.0,
-        "direct": false,
-        "score": 0.0
-      },
-      ...
+        ...
     ]
     ...
 }
 ```
-After a scrapping iteration's over, the service shall go to sleep for `SLEEP_TIME` (in seconds), defined in `conf/config.ini`
+After a scrapping iteration's over, the service shall go to sleep for `SLEEP_TIME` (in seconds), defined in `web_scraper/conf/config.ini`
 
 ### Backend API
 
-Found in src/controller/scrapper_controller.py
+Found in src/controller/scraper_controller.py
 
-#### News Scrapper API <br/>
+#### News scraper API <br/>
 
 `/api/scrape/<news_source>/<ticker_symbol>?getDate=0&getSentiment=0`
 
@@ -132,14 +156,6 @@ Will return the following result:
             "subjectivity": 0,
             "url": "https://www.benzinga.com/news/19/04/13493499/jumia-technologies-ipo-what-you-need-to-know"
         },
-        {
-            "date": 1554924214,
-            "directHeadline": false,
-            "headline": "Startups In Seattle: Where Are The Amazon Spin-Out Companies?",
-            "polarity": 0,
-            "subjectivity": 0,
-            "url": "https://www.benzinga.com/news/19/04/13517836/start-ups-in-seattle-where-are-the-amazon-spin-out-companies"
-        },
         ...
     ]
 }
@@ -177,21 +193,6 @@ CNBC_DATE_INDEX = 0
 Where `_DAY_FORMAT`, `_HOUR_FORMAT` and `_MINUTE_FORMAT` let the program know the letters prior to such strings are their relative day/hour/minute
 
 Where `_OPTIONAL_SPLIT` is to deal with cases where the date data comes with values that do not have any significance to the date itself and `_DATE_INDEX` is the location of the data after the split 
-#### Find company name by ticker symbol
-
-`/api/get_company_name/<ticker_symbol>`
-
-Using the URL:
-
-`http://localhost:9005/api/get_company_name/AAPL`
-
-Will return the following result:
-
-```
-{
-    "name": "Apple Inc."
-}
-```
 
 #### Find list of company suggestions by ticker symbol
 
@@ -229,8 +230,9 @@ Will return the following result:
 
 Python 3
 
-### Build Project
+### Setup
 
+Create virtual env. Docs [here](https://packaging.python.org/guides/installing-using-pip-and-virtualenv/#creating-a-virtualenv) 
 ```
 pip install -r requirement.txt
 py src\main.py
