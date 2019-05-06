@@ -30,8 +30,11 @@ class headlineAnalyzer():
 		# Setup evironment for headline analysis
 		self.find_effective_verb()
 
-		if self.__verb != '' and self.__verb[0] in self.__verb_dict:
-			verb = self.__verb[0]
+		# Determine if effective phrase is passive
+		self.is_passive_voice()
+
+		if self.__verb != '' and self.__verb.word in self.__verb_dict:
+			verb = self.__verb.word
 			potential_score = self.__verb_dict[verb]['value']
 
 			# Verb is effective on company name if company name is on its right hand side
@@ -90,9 +93,6 @@ class headlineAnalyzer():
 		if company_name_index != 0 or disected_headline[company_name_index - 1][1] == 'IN': self.find_verb_on_lhs(disected_headline, company_name_index)
 		else: self.find_verb_on_rhs(disected_headline, company_name_index)
 
-		# Determine if effective phrase is passive
-		self.is_passive_voice()
-
 	def find_verb_on_rhs(self, disected_headline, company_name_index):
 		"""
 		Find verb on the right hand side of company name
@@ -135,10 +135,11 @@ class headlineAnalyzer():
 		"""
 		Determine if a phrase is passively voiced
 		If 'by' succeeds or <to_be> preceeds <verb> then phrase is passive
+		Unless <to_be> preceeds a <verb> that is in -ing form
 		Eg: A is acquired by B
 		"""
 		if self.__verb_successor != '' and self.__verb_predecessor != '':
-			self.__is_passive_voice = (self.__verb_successor.tag == 'IN' or self.__verb_predecessor.tag == 'VB')
+			self.__is_passive_voice = (('VB' in self.__verb_predecessor.tag and self.__verb.tag != 'VBG') or self.__verb_successor.word == 'by')
 		else:
 			self.__is_passive_voice = False
 
@@ -149,9 +150,13 @@ class headlineAnalyzer():
 		disected_headline = []
 
 		blob = TextBlob(self.__headline)
-		for word, pos in blob.tags:
+		for word, tag in blob.tags:
 			word_2 = WordNetLemmatizer().lemmatize(word, 'v')
-			disected_headline.append((word_2, pos))
+			# Some words can be both noun AND verd (eg: misses)
+			# If a word can be lemmatized into its base form, assume it is VB (Verb in base form)
+			# Unless said word is already a verb (eg: VBG)
+			# Eg: misses -> miss
+			disected_headline.append((word_2, 'VB')) if 'VB' not in tag and word_2 != word else disected_headline.append((word_2, tag))
 
 		return disected_headline
 

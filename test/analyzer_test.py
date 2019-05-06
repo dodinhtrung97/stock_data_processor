@@ -11,7 +11,7 @@ LOGGER = logging.getLogger(__name__)
 def analyzer_test(headline, ticker, require_sentiment=True):
 	a = headlineAnalyzer(headline, ticker, require_sentiment)
 	result = a.analyze()
-	return "headline: {}, rating: {}, direct: {}".format(headline, result.score, result.direct)
+	return "headline: {}, direct: {}, rating: {}".format(headline, result.direct, result.score)
 
 if __name__ == "__main__":
 	setup_logging()
@@ -21,7 +21,11 @@ if __name__ == "__main__":
 					     "Apple to be acquired by Amazon",
 					     "Amazon to be acquired by Apple",
 					     "Apple is acquiring Amazon",
-					     "Apple acquired by Amazon"]
+					     "Apple acquired by Amazon",
+					     "Apple wins pre-feed contract for 2019",
+					     "Apple +4.6 as RBC raises to Outperform after summit",
+					     "Citi Downgrades Apple To Sell On Increased Competition, Valuation",
+					     "Apple misses on revenue"]
 					 }
 
 	for ticker in headline_dict:

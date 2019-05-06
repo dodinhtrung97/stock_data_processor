@@ -61,4 +61,5 @@ if __name__ == "__main__":
 	args = parser.parse_args()
 
 	# Start service
+	LOGGER.info("Attempting to start server at {}:{}".format(CONFIG['SERVER']['HOST'], CONFIG['SERVER']['PORT']))
 	start_server(args)
