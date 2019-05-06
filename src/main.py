@@ -8,8 +8,6 @@ import threading
 
 from web_scrapper.utils.utils import *
 from web_scrapper.scrapper.scrapper import scrapper
-from web_scrapper.controller.scrapper_controller import scrapper_controller
-from pattern_matcher.controller.pattern_matcher_controller import pattern_matcher_controller
 from web_scrapper.websocket.ws_server import *
 
 app = Flask(__name__)
@@ -27,6 +25,9 @@ def start_server(args):
 	backend_api_thread.start()
 
 def start_api_server(args):
+	from web_scrapper.controller.scrapper_controller import scrapper_controller
+	from pattern_matcher.controller.pattern_matcher_controller import pattern_matcher_controller
+
 	if bool(args.scraper):
 		app.register_blueprint(scrapper_controller, url_prefix='/api/v0/scraper')
 	if bool(args.matcher):
@@ -61,5 +62,5 @@ if __name__ == "__main__":
 	args = parser.parse_args()
 
 	# Start service
-	LOGGER.info("Attempting to start server at {}:{}".format(CONFIG['SERVER']['HOST'], CONFIG['SERVER']['PORT']))
+	LOGGER.info("Attempting to start server at http://{}:{}".format(CONFIG['SERVER']['HOST'], CONFIG['SERVER']['PORT']))
 	start_server(args)

@@ -25,7 +25,11 @@ if __name__ == "__main__":
 					     "Apple wins pre-feed contract for 2019",
 					     "Apple +4.6 as RBC raises to Outperform after summit",
 					     "Citi Downgrades Apple To Sell On Increased Competition, Valuation",
-					     "Apple misses on revenue"]
+					     "Apple misses on revenue",
+					     "Amazon acquiring Apple, also an asteroid is coming to visit tomorrow",
+					     "Apple acquiring Amazon, also an asteroid is coming to visit tomorrow",
+					     "Apple won $1b in casino investment",
+					     "Apple acquiring Amazon, in other news, I won a bet yesterday for $500"]
 					 }
 
 	for ticker in headline_dict:
