@@ -114,14 +114,14 @@ class backendServer():
 
         self.__controller_dict = {
             'scrapper_controller': {
-                    'controller': scrapper_controller,
-                    'url_prefix': self.CONFIG['SERVER']['SCRAPER_URL_PREFIX'],
-                    'activate': self.__start_scraper
+                'controller': scrapper_controller,
+                'url_prefix': self.CONFIG['SERVER']['SCRAPER_URL_PREFIX'],
+                'activate': self.__start_scraper
             },
             'matcher_controller': {
-                    'controller': pattern_matcher_controller,
-                    'url_prefix': self.CONFIG['SERVER']['MATCHER_URL_PREFIX'],
-                    'activate': self.__start_matcher
+                'controller': pattern_matcher_controller,
+                'url_prefix': self.CONFIG['SERVER']['MATCHER_URL_PREFIX'],
+                'activate': self.__start_matcher
             }
         }
 

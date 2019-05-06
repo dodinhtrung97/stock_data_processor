@@ -18,11 +18,11 @@ class headlineAnalyzer():
         self.__require_sentiment = require_sentiment
 
         self.__verb_dict = get_verb_dict(self.LOGGER)
-        self.__verb = ''
-        self.__verb_predecessor = ''
-        self.__verb_successor = ''
-        self.__is_noun_on_verb_rhs = True
-        self.__is_passive_voice = False
+        self.__verb = tuple()
+        self.__verb_predecessor = tuple()
+        self.__verb_successor = tuple()
+        self.__is_noun_on_verb_rhs = None
+        self.__is_passive_voice = None
 
     def analyze(self):
         score = self.score_headline_naive()
@@ -33,17 +33,18 @@ class headlineAnalyzer():
         # Determine if effective phrase is passive
         self.is_passive_voice()
 
-        if self.__verb != '' and self.__verb.word in self.__verb_dict:
+        if self.__verb and self.__verb.word in self.__verb_dict:
             verb = self.__verb.word
             potential_score = self.__verb_dict[verb]['value']
 
             # Verb is effective on company name if company name is on its right hand side
             is_effective_direction_on_verb_rhs = True if self.__verb_dict[verb]['direction'] == 'right' else False
-            # Noun on on verb's effective direction
+            # Noun's on verb right hand side in active sentence voicing
+            # Eg: Apple is acquired by Amazon -> Amazon acquired Apple -> Apple's active direction on rhs
             # Flip noun's position if phrase's voicing is passive
-            is_noun_on_verb_effective_direction = self.__is_noun_on_verb_rhs if not self.__is_passive_voice else not self.__is_noun_on_verb_rhs
+            is_noun_active_direction_on_rhs = self.__is_noun_on_verb_rhs if not self.__is_passive_voice else not self.__is_noun_on_verb_rhs
 
-            if is_noun_on_verb_effective_direction == is_effective_direction_on_verb_rhs:
+            if is_noun_active_direction_on_rhs == is_effective_direction_on_verb_rhs:
                 score = potential_score
 
         analysis_result = namedtuple("AnalysisResult", ['score', 'direct'])
@@ -138,7 +139,7 @@ class headlineAnalyzer():
         Unless <to_be> preceeds a <verb> that is in -ing form
         Eg: A is acquired by B
         """
-        if self.__verb_successor != '' and self.__verb_predecessor != '':
+        if self.__verb_successor and self.__verb_predecessor:
             self.__is_passive_voice = (('VB' in self.__verb_predecessor.tag and self.__verb.tag != 'VBG') or self.__verb_successor.word == 'by')
         else:
             self.__is_passive_voice = False
