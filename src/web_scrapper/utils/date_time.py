@@ -4,7 +4,7 @@ import configparser, os
 from calendar import monthrange
 
 from dateutil.parser import *
-from ..utils.config_setting import get_scrapper_config
+from ..utils.utils import get_scrapper_config
 
 class customTime:
 	

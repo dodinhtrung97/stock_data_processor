@@ -1,0 +1,29 @@
+import logging
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../")
+
+from src.web_scrapper.sentiment_analyzer.analyzer import headlineAnalyzer
+from src.web_scrapper.utils.utils import setup_logging
+
+LOGGER = logging.getLogger(__name__)
+
+def analyzer_test(headline, ticker, require_sentiment=True):
+	a = headlineAnalyzer(headline, ticker, require_sentiment)
+	result = a.analyze()
+	return "headline: {}, rating: {}, direct: {}".format(headline, result.score, result.direct)
+
+if __name__ == "__main__":
+	setup_logging()
+	headline_dict = {"Apple": 
+						["Apple is acquired by Amazon",
+					     "Amazon acquires Apple",
+					     "Apple to be acquired by Amazon",
+					     "Amazon to be acquired by Apple",
+					     "Apple is acquiring Amazon",
+					     "Apple acquired by Amazon"]
+					 }
+
+	for ticker in headline_dict:
+		for headline in headline_dict[ticker]:
+			LOGGER.info(analyzer_test(headline, ticker))

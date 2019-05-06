@@ -1,10 +1,12 @@
 from textblob import TextBlob
 from nltk.stem.wordnet import WordNetLemmatizer
+from collections import namedtuple
 
 import logging
 
 from ..utils.ticker_symbol import *
-from ..utils.config_setting import get_verb_dict
+from ..utils.utils import get_verb_dict
+from ..utils.utils import reversed_enumerate
 
 class headlineAnalyzer():
 
@@ -41,7 +43,8 @@ class headlineAnalyzer():
 			if is_noun_on_verb_effective_direction == is_effective_direction_on_verb_rhs:
 				score = potential_score
 
-		return (score, self.is_direct_headline()) if self.__require_sentiment else (None, self.is_direct_headline())
+		analysis_result = namedtuple("AnalysisResult", ['score', 'direct'])
+		return analysis_result(score=score, direct=self.is_direct_headline()) if self.__require_sentiment else analysis_result(score=None, direct=self.is_direct_headline())
 
 	def score_headline_naive(self):
 		"""
@@ -77,10 +80,8 @@ class headlineAnalyzer():
 
 		# Find company name's index in headline
 		company_name_index = 0
-		while company_name_index < len(disected_headline):
-			if disected_headline[company_name_index][0] != shortened_company_name:
-				company_name_index += 1
-			else: break
+		for company_name_index, company_name in enumerate(disected_headline):
+			if disected_headline[company_name_index][0] == shortened_company_name: break
 
 		# Loop right if company name is at the beginning of the sentence
 		# Or company name is not precceeded by the word 'by'
@@ -97,42 +98,38 @@ class headlineAnalyzer():
 		Find verb on the right hand side of company name
 		"""
 		self.__is_noun_on_verb_rhs = False
-		word_index = company_name_index + 1
 
-		while word_index < len(disected_headline):
-			word, tag = disected_headline[word_index]
+		for word_index, word in enumerate(disected_headline, start=company_name_index):
+			word, tag = word
+			word_tuple = namedtuple("Word", ['word', 'tag'])
 
 			if ('VB' in tag) and (word != 'be'):
 				pred_word_with_tag = disected_headline[word_index - 1]
 				succ_word_with_tag = disected_headline[word_index + 1]
 
-				self.__verb = (word, tag)
-				self.__verb_predecessor = pred_word_with_tag
-				self.__verb_successor = succ_word_with_tag
+				self.__verb = word_tuple(word=word, tag=tag)
+				self.__verb_predecessor = word_tuple(word=pred_word_with_tag[0], tag=pred_word_with_tag[1])
+				self.__verb_successor = word_tuple(word=succ_word_with_tag[0], tag=succ_word_with_tag[1])
 				break
-			else:
-				word_index += 1
 
 	def find_verb_on_lhs(self, disected_headline, company_name_index):
 		"""
 		Find verb on the left hand side of company name
 		"""
 		self.__is_noun_on_verb_rhs = True
-		word_index = company_name_index - 1
 
-		while word_index > 0:
-			word, tag = disected_headline[word_index]
+		for word_index, word in reversed_enumerate(disected_headline, start=company_name_index):
+			word, tag = word
+			word_tuple = namedtuple("Word", ['word', 'tag'])
 
 			if ('VB' in tag) and (word != 'be'):
 				pred_word_with_tag = disected_headline[word_index - 1]
 				succ_word_with_tag = disected_headline[word_index + 1]
 
-				self.__verb = (word, tag)
-				self.__verb_predecessor = pred_word_with_tag
-				self.__verb_successor = succ_word_with_tag
+				self.__verb = word_tuple(word=word, tag=tag)
+				self.__verb_predecessor = word_tuple(word=pred_word_with_tag[0], tag=pred_word_with_tag[1])
+				self.__verb_successor = word_tuple(word=succ_word_with_tag[0], tag=succ_word_with_tag[1])
 				break
-			else:
-				word_index -= 1
 
 	def is_passive_voice(self):
 		"""
@@ -141,7 +138,7 @@ class headlineAnalyzer():
 		Eg: A is acquired by B
 		"""
 		if self.__verb_successor != '' and self.__verb_predecessor != '':
-			self.__is_passive_voice = (self.__verb_successor[1] == 'IN' or self.__verb_predecessor[1] == 'VB')
+			self.__is_passive_voice = (self.__verb_successor.tag == 'IN' or self.__verb_predecessor.tag == 'VB')
 		else:
 			self.__is_passive_voice = False
 

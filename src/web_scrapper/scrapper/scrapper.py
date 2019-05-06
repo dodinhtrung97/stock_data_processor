@@ -9,7 +9,7 @@ from ..sentiment_analyzer.analyzer import headlineAnalyzer
 from ..utils.xpath import Xpath
 from ..utils.date_time import customTime
 from ..utils.ticker_symbol import generate_url, get_company_name_by_symbol
-from ..utils.config_setting import get_scrapper_config
+from ..utils.utils import get_scrapper_config
 
 class scrapper:
 
@@ -91,10 +91,11 @@ class scrapper:
 			publish_date = self.find_extra_element_by_condition(child, self.date_pattern) if self.date_pattern is not None else None
 			publish_date = publish_date.text.strip()
 
-			(polarity_score, direct_headline) = headlineAnalyzer(headline=headline,
-																 company_name=self.__company_name,
-																 require_sentiment=self.require_sentiment).analyze()
-	
+			analysis_result = headlineAnalyzer(headline=headline,
+											   company_name=self.__company_name,
+											   require_sentiment=self.require_sentiment).analyze()
+			score, direct_headline = analysis_result.score, analysis_result.direct
+
 			# Format date
 			publish_date_epoch = customTime(news_source=self.news_source, arbitrary_time=publish_date).to_epoch_time() if publish_date is not None else None
 
@@ -106,7 +107,7 @@ class scrapper:
 								  'headline': headline,
 								  'date': publish_date_epoch,
 								  'direct': direct_headline,
-								  'score': polarity_score}
+								  'score': score}
 
 			headline_list.append(headline_date_dict)
 

@@ -2,6 +2,7 @@ import configparser, os
 import logging.config
 import yaml
 import json
+import itertools
 
 def setup_logging():
 	path = os.path.join('conf', 'logging.yaml')
@@ -31,3 +32,10 @@ def get_verb_dict(logger):
 	except IOError as e:
 		logger.error('Failed to read json file. Exception follows. %s', e)
 		raise Exception('Failed to read json file. Exception follows. {}'.format(e))
+
+def reversed_enumerate(sequence, start):
+	sequence = sequence[:start]
+	return zip(
+		reversed(range(len(sequence))),
+		reversed(sequence),
+	)

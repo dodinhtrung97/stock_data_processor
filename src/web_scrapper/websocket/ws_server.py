@@ -11,7 +11,7 @@ import os
 import configparser
 
 from ..scrapper.automated_scrapper import automatedScrapper
-from ..utils.config_setting import get_scrapper_config 
+from ..utils.utils import get_scrapper_config 
 
 CONFIG = get_scrapper_config()
 LOGGER = logging.getLogger(__name__)

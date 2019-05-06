@@ -7,7 +7,7 @@ import json
 import threading
 
 from ..scrapper.scrapper import scrapper
-from ..utils.config_setting import get_scrapper_config
+from ..utils.utils import get_scrapper_config
 
 class automatedScrapper():
 
