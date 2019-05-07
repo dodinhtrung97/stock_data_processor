@@ -32,7 +32,8 @@ if __name__ == "__main__":
                          "Apple acquiring Amazon, in other news, I won a bet yesterday for $500",
                          "I bought a cat and Amazon bought Apple",
                          "I bought a cat and Apple bought Amazon",
-                         "Apple told Amazon to buy a cat, Amazon then bought Apple"]
+                         "Apple told Amazon to buy a cat, Amazon then bought Apple",
+                         "Apple bankrupted after reports of CEO's gambling addiction"]
                      }
 
     headline_dict_2 = {"Apple": ["Amazon acquires Apple"]}

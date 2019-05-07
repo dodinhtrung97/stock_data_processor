@@ -15,15 +15,15 @@ class backendServer():
     setup_logging()
 
     APP = Flask(__name__)
-    CONFIG = get_scrapper_config()
+    SERVER_CONFIG = get_server_config()
     LOGGER = logging.getLogger(__name__)
     
     def __init__(self, args):
-        self.__start_websocket = bool(args.websocket)
-        self.__start_scraper = bool(args.scraper)
-        self.__start_matcher = bool(args.matcher)
-        self.__start_predictor = bool(args.predictor)
-        self.__logging = bool(args.logging)
+        self.start_websocket = bool(args.websocket)
+        self.start_scrapper_controller = bool(args.scrapper)
+        self.start_pattern_matcher_controller = bool(args.matcher)
+        self.start_predictor_controller = bool(args.predictor)
+        self.logging = bool(args.logging)
 
         self.__controller_dict = {}
         self.__service_dict = {}
@@ -62,8 +62,8 @@ class backendServer():
 
                 self.APP.register_blueprint(controller_name, url_prefix=url_prefix)
 
-        self.APP.run(host=self.CONFIG['SERVER']['HOST'], 
-                     port=self.CONFIG['SERVER']['PORT'], 
+        self.APP.run(host=self.SERVER_CONFIG['SERVER']['HOST'], 
+                     port=self.SERVER_CONFIG['SERVER']['PORT'], 
                      threaded=True,
                      debug=False)
 
@@ -71,19 +71,41 @@ class backendServer():
         """
         Start Websocket Server
         """
-        ws_ip = self.CONFIG['WEBSOCKET_SERVER']['HOST']
-        ws_route = self.CONFIG['WEBSOCKET_SERVER']['ROUTE']
-        ws_port = self.CONFIG['WEBSOCKET_SERVER']['PORT']
+        ws_ip = self.SERVER_CONFIG['WEBSOCKET_SERVER']['HOST']
+        ws_route = self.SERVER_CONFIG['WEBSOCKET_SERVER']['ROUTE']
+        ws_port = self.SERVER_CONFIG['WEBSOCKET_SERVER']['PORT']
 
         application = WSServer([(ws_route, WSHandler)])
         application.listen(ws_port)
 
         self.LOGGER.info('Websocket Server Started at ws://{}:{}{}'.format(ws_ip, ws_port, ws_route))
-        scrapper_thread = threading.Thread(target=application.scrape, args=[self.__logging])
+        scrapper_thread = threading.Thread(target=application.scrape, args=[self.logging])
         tornado_thread = threading.Thread(target=tornado.ioloop.IOLoop.instance().start)
         
         scrapper_thread.start()
         tornado_thread.start()
+
+    def controller_dict_init(self): 
+        """
+        Initialize a controller dictionary that determines what blueprints will be registered into Flask Server
+        Please only import controller modules within this function
+        """
+        self.LOGGER.info("Setting Up Server Environment ...")
+
+        from web_scrapper.controller.scrapper_controller import scrapper_controller
+        from pattern_matcher.controller.pattern_matcher_controller import pattern_matcher_controller
+        from price_predictor.controller.predictor_controller import predictor_controller
+
+        # Ignore 1st element of locals() 'self'
+        controller_dict = dict.fromkeys(list(locals())[1:], dict())
+        
+        # Load data into config dictionary
+        for index, controller_name in enumerate(controller_dict.copy()) :
+            controller_dict[controller_name]['controller'] = locals()[controller_name]
+            controller_dict[controller_name]['url_prefix'] = self.SERVER_CONFIG['SERVER']['{}_{}'.format(controller_name.upper(), 'URL_PREFIX')]
+            controller_dict[controller_name]['activate'] = self.__dict__['start_{}'.format(controller_name)]
+
+        self.__controller_dict = controller_dict
 
     def service_dict_init(self):
         """
@@ -93,51 +115,21 @@ class backendServer():
             'websocket': {
                 'operation': self.start_websocket_server,
                 'args': [],
-                'activate': self.__start_websocket,
+                'activate': self.start_websocket,
                 'threaded': False
             },
             'api': {
                 'operation': self.start_api_server,
                 'args': [],
-                'activate': self.__start_scraper or self.__start_matcher or self.__start_predictor,
+                'activate': self.start_scrapper_controller or self.start_pattern_matcher_controller or self.start_predictor_controller,
                 'threaded': True
             }
         }
 
-    def controller_dict_init(self): 
-        """
-        Initialize a controller dictionary that determines what blueprints will be registered into Flask Server
-        """
-        self.LOGGER.info("Setting Up Server Environment ...")
-
-        from web_scrapper.controller.scrapper_controller import scrapper_controller
-        from pattern_matcher.controller.pattern_matcher_controller import pattern_matcher_controller
-        from price_predictor.controller.predictor_controller import predictor_controller
-
-
-        self.__controller_dict = {
-            'scrapper_controller': {
-                'controller': scrapper_controller,
-                'url_prefix': self.CONFIG['SERVER']['SCRAPER_URL_PREFIX'],
-                'activate': self.__start_scraper
-            },
-            'matcher_controller': {
-                'controller': pattern_matcher_controller,
-                'url_prefix': self.CONFIG['SERVER']['MATCHER_URL_PREFIX'],
-                'activate': self.__start_matcher
-            },
-            'predictor_controller': {
-                'controller': predictor_controller,
-                'url_prefix': self.CONFIG['SERVER']['PREDICTOR_URL_PREFIX'],
-                'activate': self.__start_predictor
-            }
-        }
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Trade Advisor')
     parser.add_argument('--websocket', metavar='WEBSOCKET', default=1, type=int, help='Determine if websocket for auto_scraper module will be started')
-    parser.add_argument('--scraper', metavar='SCRAPPER', default=1, type=int, help='Determine if scraper module will be started')
+    parser.add_argument('--scrapper', metavar='SCRAPPER', default=1, type=int, help='Determine if scraper module will be started')
     parser.add_argument('--matcher', metavar='MATCHER', default=1, type=int, help='Determine if pattern matcher module will be started')
     parser.add_argument('--predictor', metavar='PREDICTOR', default=1, type=int, help='Determine if predictor module will be started')
     parser.add_argument('--logging', metavar='LOGGING', default=0, type=int, help='Log scrapping outputs into logs/*.json')

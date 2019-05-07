@@ -24,15 +24,23 @@ def get_scrapper_config():
 
     return config
 
+def get_server_config():
+    config = configparser.ConfigParser()
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    path = os.path.join(dir_path, '..', '..', '..', 'conf', 'config.ini')
+    config.read(path)
+
+    return config
+
 def get_verb_dict(logger):
     dir_path = os.path.dirname(os.path.realpath(__file__))
     verb_dict = os.path.join(dir_path, '..', 'conf', 'verb_dict.json')
     try:
         with open(verb_dict, 'r') as f: return json.load(f)
     except IOError as e:
-        logger.error('Failed to read json file. Exception follows. %s', e)
-        raise Exception('Failed to read json file. Exception follows. {}'.format(e))
-
+        logger.error('Failed to read file {}. Exception follows. {}'.format(file_name, e))
+        raise Exception('Failed to read file {}. Exception follows. {}'.format(file_name, e))
+        
 def reversed_enumerate(sequence, start):
     sequence = sequence[:start]
     return zip(

@@ -22,5 +22,17 @@
     "downgrade": {
         "value": "--",
         "direction": "right"
+    },
+    "grow": {
+        "value": "++",
+        "direction": "left"
+    },
+    "suffer": {
+        "value": "--",
+        "direction": "left"
+    },
+    "bankrupt": {
+        "value": "---",
+        "direction": "left"
     }
 }
