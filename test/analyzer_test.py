@@ -8,8 +8,8 @@ from src.web_scrapper.utils.utils import setup_logging
 
 LOGGER = logging.getLogger(__name__)
 
-def analyzer_test(headline, ticker, require_sentiment=True):
-    a = headlineAnalyzer(headline, ticker, require_sentiment)
+def analyzer_test(headline, ticker):
+    a = headlineAnalyzer(headline, ticker)
     result = a.analyze()
     return "headline: {}, direct: {}, rating: {}".format(headline, result.direct, result.score)
 
@@ -31,7 +31,8 @@ if __name__ == "__main__":
                          "Apple won $1b in casino investment",
                          "Apple acquiring Amazon, in other news, I won a bet yesterday for $500",
                          "I bought a cat and Amazon bought Apple",
-                         "I bought a cat and Apple bought Amazon"]
+                         "I bought a cat and Apple bought Amazon",
+                         "Apple told Amazon to buy a cat, Amazon then bought Apple"]
                      }
 
     headline_dict_2 = {"Apple": ["Amazon acquires Apple"]}

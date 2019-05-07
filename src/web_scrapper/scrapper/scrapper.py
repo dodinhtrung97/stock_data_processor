@@ -92,8 +92,7 @@ class scrapper:
             publish_date = publish_date.text.strip()
 
             analysis_result = headlineAnalyzer(headline=headline,
-                                               company_name=self.__company_name,
-                                               require_sentiment=self.require_sentiment).analyze()
+                                               company_name=self.__company_name).analyze()
             score, direct_headline = analysis_result.score, analysis_result.direct
 
             # Format date
@@ -107,7 +106,7 @@ class scrapper:
                                   'headline': headline,
                                   'date': publish_date_epoch,
                                   'direct': direct_headline,
-                                  'score': score}
+                                  'score': score if self.require_sentiment else None}
 
             headline_list.append(headline_date_dict)
 
@@ -190,9 +189,6 @@ class scrapper:
     def is_within_hours(self, publish_time):
         """
         Check if time since article publish is within desired time range
-        
-        Args:
-            publish_time (TYPE): News publish time
         """
         current_time = time.time()
         return float(self.within_hours) >= (current_time - publish_time)/3600
@@ -200,9 +196,6 @@ class scrapper:
     def is_known_news_source(self):
         """
         Check if init news source is known
-        
-        Raises:
-            ValueError: Unknown news source
         """
         news_source_list = dict(self.CONFIG['NEWS_SOURCE']).keys()
         if not self.news_source.lower() in news_source_list:
