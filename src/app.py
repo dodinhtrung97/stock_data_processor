@@ -103,7 +103,7 @@ class backendServer():
             }
         }
 
-    def controller_dict_init(self):
+    def controller_dict_init(self): 
         """
         Initialize a controller dictionary that determines what blueprints will be registered into Flask Server
         """
