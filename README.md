@@ -13,6 +13,10 @@ Includes 3 modules: <br/>
 - Price Predictor: <br/>
     - TBD
 
+### Server Config
+
+In `conf/config.ini`
+
 ### Logger
 
 Either in `/conf/logging.yaml` or set a `LOG_CFG` environment variable
@@ -91,14 +95,13 @@ Upon news retrieved, the server shall only send pieces of news that have not pre
 ```
 "AMZN": {
     "CNBC": [
-      {
-        "source": "CNBC",
-        "url": "https://www.cnbc.com/2019/04/22/us-futures-signal-lower-open-ahead-of-busy-earnings-week.html",
-        "headline": "US futures signal a lower open ahead of busy earnings week",
-        "date": 1555912800.0,
-        "direct": false,
-        "score": 0.05
-      },
+        {
+            "date": 1556964000,
+            "direct": false,
+            "headline": "IMDbPro and Box Office Mojo Reveal the Top-Grossing Films in April 2019 and the Most Anticipated Films Opening in May",
+            "score": "+",
+            "url": "https://www.benzinga.com/pressreleases/19/05/b13664704/imdbpro-and-box-office-mojo-reveal-the-top-grossing-films-in-april-2019-and-the-most-anticipated-f"
+        },
     ],
     "BENZINGA_HEADLINES": [
         ...
@@ -149,13 +152,12 @@ Will return the following result:
     "source": "BENZINGA",
     "resultSet": [
         {
-            "date": 1554927023,
-            "directHeadline": false,
-            "headline": "Jumia Technologies IPO: What You Need To Know",
-            "polarity": 0,
-            "subjectivity": 0,
-            "url": "https://www.benzinga.com/news/19/04/13493499/jumia-technologies-ipo-what-you-need-to-know"
-        },
+            "date": 1556964000,
+            "direct": false,
+            "headline": "IMDbPro and Box Office Mojo Reveal the Top-Grossing Films in April 2019 and the Most Anticipated Films Opening in May",
+            "score": "+",
+            "url": "https://www.benzinga.com/pressreleases/19/05/b13664704/imdbpro-and-box-office-mojo-reveal-the-top-grossing-films-in-april-2019-and-the-most-anticipated-f"
+        }
         ...
     ]
 }
@@ -175,7 +177,7 @@ With any JSON body will return the following result:
 
 Date is formatted using the utils.date\_time class <br/>
 
-Uses optional `NEWS_DATE_FORMAT` parameters in conf/config.ini <br/>
+Uses optional `NEWS_DATE_FORMAT` parameters in `web_scrapper/conf/config.ini` <br/>
 
 `Eg: 4 hrs ago - CNBC.com` 
 
