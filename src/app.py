@@ -30,6 +30,7 @@ class backendServer():
 
         # Build controller dict
         self.controller_dict_init()
+        # Build service dict
         self.service_dict_init()
 
     def start(self):
@@ -56,11 +57,10 @@ class backendServer():
         Start Flask Server
         """
         for controller in self.__controller_dict:
-            if self.__controller_dict[controller]['activate']:
-                controller_name = self.__controller_dict[controller]['controller']
-                url_prefix = self.__controller_dict[controller]['url_prefix']
+            controller_name = self.__controller_dict[controller]['controller']
+            url_prefix = self.__controller_dict[controller]['url_prefix']
 
-                self.APP.register_blueprint(controller_name, url_prefix=url_prefix)
+            self.APP.register_blueprint(controller_name, url_prefix=url_prefix)
 
         self.APP.run(host=self.SERVER_CONFIG['SERVER']['HOST'], 
                      port=self.SERVER_CONFIG['SERVER']['PORT'], 
@@ -100,10 +100,14 @@ class backendServer():
         controller_dict = dict.fromkeys(list(locals())[1:], dict())
         
         # Load data into config dictionary
-        for index, controller_name in enumerate(controller_dict.copy()) :
-            controller_dict[controller_name]['controller'] = locals()[controller_name]
-            controller_dict[controller_name]['url_prefix'] = self.SERVER_CONFIG['SERVER']['{}_{}'.format(controller_name.upper(), 'URL_PREFIX')]
-            controller_dict[controller_name]['activate'] = self.__dict__['start_{}'.format(controller_name)]
+        for index, controller_name in enumerate(controller_dict.copy()):
+            is_activate_controller = getattr(self, 'start_{}'.format(controller_name))
+
+            if is_activate_controller:
+                controller_dict[controller_name]['controller'] = locals()[controller_name]
+                controller_dict[controller_name]['url_prefix'] = self.SERVER_CONFIG['SERVER']['{}_{}'.format(controller_name.upper(), 'URL_PREFIX')]
+            else:
+                controller_dict.pop(controller_name, None)
 
         self.__controller_dict = controller_dict
 
@@ -121,7 +125,7 @@ class backendServer():
             'api': {
                 'operation': self.start_api_server,
                 'args': [],
-                'activate': self.start_scrapper_controller or self.start_pattern_matcher_controller or self.start_predictor_controller,
+                'activate': len(self.__controller_dict) > 0,
                 'threaded': True
             }
         }
