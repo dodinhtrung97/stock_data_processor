@@ -22,6 +22,7 @@ class backendServer():
         self.__start_websocket = bool(args.websocket)
         self.__start_scraper = bool(args.scraper)
         self.__start_matcher = bool(args.matcher)
+        self.__start_predictor = bool(args.predictor)
         self.__logging = bool(args.logging)
 
         self.__controller_dict = {}
@@ -98,7 +99,7 @@ class backendServer():
             'api': {
                 'operation': self.start_api_server,
                 'args': [],
-                'activate': self.__start_scraper or self.__start_matcher,
+                'activate': self.__start_scraper or self.__start_matcher or self.__start_predictor,
                 'threaded': True
             }
         }
@@ -111,6 +112,8 @@ class backendServer():
 
         from web_scrapper.controller.scrapper_controller import scrapper_controller
         from pattern_matcher.controller.pattern_matcher_controller import pattern_matcher_controller
+        from price_predictor.controller.predictor_controller import predictor_controller
+
 
         self.__controller_dict = {
             'scrapper_controller': {
@@ -122,6 +125,11 @@ class backendServer():
                 'controller': pattern_matcher_controller,
                 'url_prefix': self.CONFIG['SERVER']['MATCHER_URL_PREFIX'],
                 'activate': self.__start_matcher
+            },
+            'predictor_controller': {
+                'controller': predictor_controller,
+                'url_prefix': self.CONFIG['SERVER']['PREDICTOR_URL_PREFIX'],
+                'activate': self.__start_predictor
             }
         }
 
@@ -131,6 +139,7 @@ if __name__ == "__main__":
     parser.add_argument('--websocket', metavar='WEBSOCKET', default=1, type=int, help='Determine if websocket for auto_scraper module will be started')
     parser.add_argument('--scraper', metavar='SCRAPPER', default=1, type=int, help='Determine if scraper module will be started')
     parser.add_argument('--matcher', metavar='MATCHER', default=1, type=int, help='Determine if pattern matcher module will be started')
+    parser.add_argument('--predictor', metavar='PREDICTOR', default=1, type=int, help='Determine if predictor module will be started')
     parser.add_argument('--logging', metavar='LOGGING', default=0, type=int, help='Log scrapping outputs into logs/*.json')
     args = parser.parse_args()
 
