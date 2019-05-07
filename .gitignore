@@ -1,3 +1,4 @@
+.vscode/
 build/
 dist/
 news_headline_scrapper.egg-info/
