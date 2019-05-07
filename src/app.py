@@ -97,7 +97,7 @@ class backendServer():
         from price_predictor.controller.predictor_controller import predictor_controller
 
         # Ignore 1st element of locals() 'self'
-        controller_dict = dict.fromkeys(list(locals())[1:], dict())
+        controller_dict = dict.fromkeys([key for key in locals() if key != 'self'], dict())
         
         # Load data into config dictionary
         for index, controller_name in enumerate(controller_dict.copy()):
