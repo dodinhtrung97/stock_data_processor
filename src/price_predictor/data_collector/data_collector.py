@@ -2,6 +2,8 @@ import logging
 import fix_yahoo_finance as yf
 
 from datetime import datetime
+from ..utils.price_date import get_lastest_price_day
+from ..utils.data_io import *
 
 class DataCollector:
     """
@@ -34,12 +36,28 @@ class DataCollector:
         Start collecting original dataFrame from data source
         """
         self.validate_inputs()
-        ticker = yf.Ticker(self.ticker_symbol)
+        lastest_price_day = get_lastest_price_day()
+        file_name = self.ticker_symbol + "_" + str(self.period) + "_" + str(lastest_price_day)
+
         try:
-            self.LOGGER.info("Collecting data for {} with period {}".format(self.ticker_symbol, self.period))
-            self.results = ticker.history(period = str(self.period) + "y")
+            # Get data from local
+            self.LOGGER.info("Loading data for {} with period {}".format(self.ticker_symbol, self.period))
+            self.results = load_dataframe_from_csv(file_name)
         except:
-            raise ValueError("Cannot get data from data source")
+            try:
+                # Get data online
+                ticker = yf.Ticker(self.ticker_symbol)
+                self.LOGGER.info("Collecting data for {} with period {}".format(self.ticker_symbol, self.period))
+                self.results = ticker.history(period = str(self.period) + "y")
+
+                # Check data is lastest
+                if pd.to_datetime(self.results.tail(1).index.values[0]).date() == lastest_price_day:
+                    self.clean_data()
+                    save_dataframe_to_csv(self.results, file_name)
+                else:
+                    raise ValueError("Data from data source is not lastest")
+            except:
+                raise ValueError("Cannot get data from data source")
 
     def clean_data(self):
         """
@@ -57,15 +75,6 @@ class DataCollector:
             self.results = self.results[necessary_columns]
         else:
             raise ValueError("There are not enough necessary columns from dataFrame")
-
-    def run(self):
-        """
-        All processes in collecting
-        """
-        self.collect()
-        self.clean_data()
-
-
 
 
 

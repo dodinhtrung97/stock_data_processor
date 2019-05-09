@@ -20,7 +20,7 @@ def predict_url(ticker_symbol):
     days_ahead = args['daysAhead']
 
     collector = DataCollector(ticker_symbol=ticker_symbol, period=5)
-    collector.run()
+    collector.collect()
     predictor = LinearRegPredictor(collector.results, days_ahead)
     predictor.run()
 
