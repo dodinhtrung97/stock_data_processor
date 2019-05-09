@@ -33,31 +33,41 @@ class DataCollector:
 
     def collect(self):
         """
-        Start collecting original dataFrame from data source
+        Get data from local
+        If data is not available or out-of-date:
+        1. Collecting original dataFrame from data source
+        2. Clean data
+        3. Store data
         """
         self.validate_inputs()
         lastest_price_day = get_lastest_price_day()
-        file_name = self.ticker_symbol + "_" + str(self.period) + "_" + str(lastest_price_day)
+        file_name = self.ticker_symbol
 
         try:
             # Get data from local
-            self.LOGGER.info("Loading data for {} with period {}".format(self.ticker_symbol, self.period))
+            self.LOGGER.info("Loading data for {} with period {} from local".format(self.ticker_symbol, self.period))
             self.results = load_dataframe_from_csv(file_name)
+            self.results.index = self.results['Date']
+            self.results = self.results.drop(['Date'], 1)
+            # Check data in local is lastest
+            if pd.to_datetime(self.results.tail(1).index.values[0]).date() != lastest_price_day:
+                self.LOGGER.info("Data of ticker {} from local is not lastest".format(self.ticker_symbol))
+                raise ValueError("Data from local is not lastest")
         except:
             try:
                 # Get data online
+                self.LOGGER.info("Collecting data for {} with period {} online".format(self.ticker_symbol, self.period))
                 ticker = yf.Ticker(self.ticker_symbol)
-                self.LOGGER.info("Collecting data for {} with period {}".format(self.ticker_symbol, self.period))
                 self.results = ticker.history(period = str(self.period) + "y")
-
-                # Check data is lastest
+                # Check data from online is lastest
                 if pd.to_datetime(self.results.tail(1).index.values[0]).date() == lastest_price_day:
                     self.clean_data()
                     save_dataframe_to_csv(self.results, file_name)
                 else:
+                    self.LOGGER.info("Data of ticker {} from online is not lastest".format(self.ticker_symbol))
                     raise ValueError("Data from data source is not lastest")
             except:
-                raise ValueError("Cannot get data from data source")
+                raise ValueError("Cannot get data from data source online")
 
     def clean_data(self):
         """

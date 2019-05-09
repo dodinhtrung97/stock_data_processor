@@ -10,8 +10,8 @@ def get_lastest_price_day():
 
     Returns
     ----------
-    lastest_price_date (Datetime.Date): The lastest day when stock price data updated
-    e.g. Date(2019-04-17)
+    lastest_price_date (Datetime.Date): The lastest day when stock price data should be updated
+    e.g. Datetime.Date(2019-04-17)
     """
     delta_days = 1
     weekday = datetime.today().weekday()
