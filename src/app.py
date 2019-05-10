@@ -100,12 +100,12 @@ class backendServer():
         controller_dict = dict.fromkeys([key for key in locals() if key != 'self'], dict())
         
         # Load data into config dictionary
-        for index, controller_name in enumerate(controller_dict.copy()):
+        for index, controller_name in enumerate(controller_dict):
             is_activate_controller = getattr(self, 'start_{}'.format(controller_name))
 
             if is_activate_controller:
-                controller_dict[controller_name]['controller'] = locals()[controller_name]
-                controller_dict[controller_name]['url_prefix'] = self.SERVER_CONFIG['SERVER']['{}_{}'.format(controller_name.upper(), 'URL_PREFIX')]
+                controller_dict[controller_name] = {'controller': locals()[controller_name],
+                                                    'url_prefix': self.SERVER_CONFIG['SERVER']['{}_{}'.format(controller_name.upper(), 'URL_PREFIX')]}
             else:
                 controller_dict.pop(controller_name, None)
 
