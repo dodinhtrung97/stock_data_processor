@@ -13,11 +13,8 @@ def predict_url(ticker_symbol):
     """
     Prase optional arguments in request url if exist
     """
-    parser = reqparse.RequestParser()
-    parser.add_argument('daysAhead', type=int, default=1)
-
-    args = parser.parse_args()
-    days_ahead = args['daysAhead']
+    params = request.args.to_dict()
+    days_ahead = int(params['daysAhead'])
 
     collector = DataCollector(ticker_symbol=ticker_symbol, period=5)
     collector.collect()

@@ -92,6 +92,24 @@ loggers:
             handlers: [console, info_file_handler]
             propagate: no
 
+    price_predictor:
+        controller:
+            level: INFO
+            handlers: [console, info_file_handler]
+            propagate: no
+        data_collector:
+            level: INFO
+            handlers: [console, info_file_handler]
+            propagate: no
+        predictor:
+            level: INFO
+            handlers: [console, info_file_handler]
+            propagate: no
+        utils:
+            level: INFO
+            handlers: [console, info_file_handler]
+            propagate: no
+
     test:
         level: INFO
         handlers: [console, info_file_handler]
