@@ -34,5 +34,17 @@
     "bankrupt": {
         "value": "---",
         "direction": "left"
+    },
+    "skyrocket": {
+    	"value": "+++",
+    	"direction": "left"
+    },
+    "complain": {
+    	"value": "--",
+    	"direction": "right"
+    },
+    "investigate": {
+    	"value": "--",
+    	"direction": "right"
     }
 }
