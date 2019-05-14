@@ -11,11 +11,11 @@ import os
 import yaml
 import logging.config
 
-LOGGER = logging.getLogger(__name__)
-
 class DataCollectorService(win32serviceutil.ServiceFramework):
     _svc_name_ = "mytest-service"
     _svc_display_name_ = "mytest service"
+
+    LOGGER = logging.getLogger(__name__)
  
     @classmethod
     def parse_command_line(cls):
@@ -37,7 +37,7 @@ class DataCollectorService(win32serviceutil.ServiceFramework):
         '''
         Called when the service is asked to stop
         '''
-        LOGGER.info("... STOPPING SCHEDULE SERVICE ... \n")
+        self.LOGGER.info("... STOPPING SCHEDULE SERVICE ... \n")
         self.stop_requested = True
         self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
         win32event.SetEvent(self.hWaitStop)
@@ -52,13 +52,13 @@ class DataCollectorService(win32serviceutil.ServiceFramework):
         self.main()
 
     def test1(self, index):
-        print("HELLO WORLD {}".format(index))
+        self.LOGGER.info("HELLO WORLD {}".format(index))
 
     def main(self):
         '''
         Main class to be ovverridden to add logic
         '''
-        LOGGER.info("... STARTING SCHEDULE PROCESS ...\n")
+        self.LOGGER.info("... STARTING SCHEDULE PROCESS ...\n")
 
         index = 0
         while not self.stop_requested:
@@ -68,4 +68,15 @@ class DataCollectorService(win32serviceutil.ServiceFramework):
             time.sleep(1)
 
 if __name__ == '__main__':
+    path = os.path.join('conf', 'logging.yaml')
+    env_key = os.getenv('LOG_CFG', None)
+    if env_key:
+        path = env_key
+    if os.path.exists(path):
+        with open(path, 'rt') as f:
+            config = yaml.safe_load(f.read())
+        logging.config.dictConfig(config)
+    else:
+        logging.basicConfig(level=default_level)
+
     DataCollectorService.parse_command_line()
