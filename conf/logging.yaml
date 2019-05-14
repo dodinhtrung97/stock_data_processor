@@ -40,6 +40,11 @@ loggers:
         handlers: [console, error_file_handler]
         propagate: no
 
+    data_collector:
+        level: INFO
+        handlers: [console, info_file_handler]
+        propagate: no
+
     pattern_matcher:
         controller:
             level: INFO
