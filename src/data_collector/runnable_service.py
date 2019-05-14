@@ -13,7 +13,7 @@ import logging.config
 
 LOGGER = logging.getLogger(__name__)
 
-class WinService(win32serviceutil.ServiceFramework):
+class DataCollectorService(win32serviceutil.ServiceFramework):
     _svc_name_ = "mytest-service"
     _svc_display_name_ = "mytest service"
  
@@ -52,7 +52,7 @@ class WinService(win32serviceutil.ServiceFramework):
         self.main()
 
     def test1(self, index):
-        print("HELLO {}".format(index))
+        print("HELLO WORLD {}".format(index))
 
     def main(self):
         '''
@@ -68,4 +68,4 @@ class WinService(win32serviceutil.ServiceFramework):
             time.sleep(1)
 
 if __name__ == '__main__':
-    WinService.parse_command_line()
+    DataCollectorService.parse_command_line()
