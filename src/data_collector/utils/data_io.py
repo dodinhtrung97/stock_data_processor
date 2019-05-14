@@ -2,9 +2,9 @@ import pandas as pd
 import os
 import errno
 
-from .utils import get_predictor_config
+from .utils import get_collector_config
 
-CONFIG = get_predictor_config()
+CONFIG = get_collector_config()
 
 def save_dataframe_to_csv(df, file_name):
     """
@@ -41,11 +41,28 @@ def load_dataframe_from_csv(file_name):
     df (DataFrame)
     """    
     df = None
-    try:
-        df = pd.read_csv(os.path.join(CONFIG['PREDICTOR']['DIR_DATA'], file_name))
-    except IOError as e:
-        raise Exception("Cannot load dataframe from {}.csv. Exception follows. {}".format(file_name, e))
+
+    file_path = os.path.join(CONFIG["PREDICTOR"]["DIR_DATA"], file_name)
+    if os.path.exists(file_path):
+        try:
+            df = pd.read_csv(file_path)
+        except IOError as e:
+            raise Exception("Cannot load dataframe from {}.csv. Exception follows. {}".format(file_name, e))
 
     return df
 
-    
+def append_dataframe_to_csv(df, file_name):
+    """
+    Append DataFrame to file csv
+
+    Parameters
+    ----------
+    df (DataFrame)
+    file_name (String): Name of file
+    """    
+    file_path = os.path.join(CONFIG["PREDICTOR"]["DIR_DATA"], file_name)
+    if os.path.exists(file_path):
+        try:
+            df.to_csv(file_path, mode='a', header=False)
+        except IOError as e:
+            raise Exception("Cannot append dataframe to {}.csv. Exception follows. {}".format(file_name, e))
