@@ -9,4 +9,5 @@ data/
 test/*.csv
 test/.ipynb_checkpoints
 test/*.ipynb
+data/
 

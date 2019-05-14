@@ -7,16 +7,20 @@ import time
 import logging
 import schedule 
 
+import logging.config
+import sys
 import os
 import yaml
-import logging.config
+
+from web_scrapper.utils.utils import setup_logging
 
 class DataCollectorService(win32serviceutil.ServiceFramework):
-    _svc_name_ = "mytest-service"
-    _svc_display_name_ = "mytest service"
+    _svc_name_ = "scheduled-data-collector"
+    _svc_display_name_ = "Scheduled Data Collector"
 
+    setup_logging()
     LOGGER = logging.getLogger(__name__)
- 
+    
     @classmethod
     def parse_command_line(cls):
         '''
@@ -68,15 +72,4 @@ class DataCollectorService(win32serviceutil.ServiceFramework):
             time.sleep(1)
 
 if __name__ == '__main__':
-    path = os.path.join('conf', 'logging.yaml')
-    env_key = os.getenv('LOG_CFG', None)
-    if env_key:
-        path = env_key
-    if os.path.exists(path):
-        with open(path, 'rt') as f:
-            config = yaml.safe_load(f.read())
-        logging.config.dictConfig(config)
-    else:
-        logging.basicConfig(level=default_level)
-
     DataCollectorService.parse_command_line()

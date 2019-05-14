@@ -4,7 +4,7 @@ import yaml
 import json
 import itertools
 
-def setup_logging():
+def setup_logging(default_level='DEBUG'):
     path = os.path.join('conf', 'logging.yaml')
     env_key = os.getenv('LOG_CFG', None)
     if env_key:
