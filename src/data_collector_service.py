@@ -6,42 +6,37 @@ import socket
 import time
 import logging
 import schedule 
+import croniter
+import datetime
 
-import logging.config
-import sys
-import os
-import yaml
-
-from web_scrapper.utils.utils import setup_logging
+from web_scrapper.utils.utils import *
 
 class DataCollectorService(win32serviceutil.ServiceFramework):
-    _svc_name_ = "scheduled-data-collector"
-    _svc_display_name_ = "Scheduled Data Collector"
 
-    setup_logging()
+    setup_logging('windows_service_logging.yaml')
+
     LOGGER = logging.getLogger(__name__)
+    SERVER_CONFIG = get_server_config()
+    WINDOWS_SERVICE_CONFIG = get_windows_service_config(LOGGER)
+
+    _svc_name_ = WINDOWS_SERVICE_CONFIG['svc_name']
+    _svc_display_name_ = WINDOWS_SERVICE_CONFIG['svc_display_name']
     
     @classmethod
     def parse_command_line(cls):
-        '''
-        ClassMethod to parse the command line
-        '''
         win32serviceutil.HandleCommandLine(cls)
 
     def __init__(self, args):
-        '''
-        Constructor of the winservice
-        '''
         win32serviceutil.ServiceFramework.__init__(self, args)
-        self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)
         socket.setdefaulttimeout(60)
+
+        self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)
         self.stop_requested = False
 
     def SvcStop(self):
         '''
         Called when the service is asked to stop
         '''
-        self.LOGGER.info("... STOPPING SCHEDULE SERVICE ... \n")
         self.stop_requested = True
         self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
         win32event.SetEvent(self.hWaitStop)
@@ -55,21 +50,28 @@ class DataCollectorService(win32serviceutil.ServiceFramework):
                               (self._svc_name_, ''))
         self.main()
 
-    def test1(self, index):
-        self.LOGGER.info("HELLO WORLD {}".format(index))
-
     def main(self):
-        '''
-        Main class to be ovverridden to add logic
-        '''
-        self.LOGGER.info("... STARTING SCHEDULE PROCESS ...\n")
+        this_cron = None
 
-        index = 0
         while not self.stop_requested:
-            if index > 5: break
-            self.test1(index)
-            index += 1
+            this_cron = self.scheduled_work(this_cron)
             time.sleep(1)
+
+    def scheduled_work(self, prev_cron):
+        period = self.WINDOWS_SERVICE_CONFIG['time']
+
+        now = datetime.datetime.now().replace(microsecond=0)
+        cron = croniter.croniter(period, now)
+        next_cron = cron.get_next(datetime.datetime)
+
+        is_cron_updated = False if not prev_cron else prev_cron != next_cron
+
+        if is_cron_updated:
+            self.LOGGER.info("HIT @ time: {}".format(now))
+        else:
+            self.LOGGER.info("@ time: {}, prev_cron: {}, next_cron: {}".format(now, prev_cron, next_cron))
+
+        return next_cron
 
 if __name__ == '__main__':
     DataCollectorService.parse_command_line()

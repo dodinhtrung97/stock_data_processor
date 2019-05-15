@@ -1,0 +1,16 @@
+{   
+    "svc_name": "scheduled-data-collector",
+    "svc_display_name": "Scheduled Data Collector",
+    "time": "* * * * *",
+    "dir": "./data",
+    "ticker": [ "AAPL",
+                "AMZN",
+                "GOOG",
+                "MSFT",
+                "INTC",
+                "AMD",
+                "TSLA",
+                "BAC",
+                "TTM",
+                "COKE" ]
+}
