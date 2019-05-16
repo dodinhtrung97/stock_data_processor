@@ -3,6 +3,7 @@ import threading
 import time
 
 from ..collector.data_collector import DataCollector
+from ..utils.utils import get_ticker_list
 
 class Runner():
     """
@@ -17,8 +18,8 @@ class Runner():
 
     LOGGER = logging.getLogger(__name__)
 
-    def __init__(self, tickers, num_threads=4):
-        self.tickers = tickers
+    def __init__(self, num_threads=4):
+        self.tickers = get_ticker_list()['tickers']
         self.num_threads = num_threads
         self.data_collectors = None
 

@@ -2,7 +2,7 @@
 
 ### Description
 
-Includes 3 modules: <br/>
+Includes 4 modules: <br/>
 
 - Pattern Matcher: <br/>
     - Assumes a set of data (ticker specified) exists
@@ -11,11 +11,19 @@ Includes 3 modules: <br/>
     - Scrapes headline data from `benzinga` and `cnbc`
     - Applies sentiment analysis on said data, outputing a score that is one of `[---, --, -, 0, +, ++, +++]`
 - Price Predictor: <br/>
-    - TBD
+    - Predict stock price for `x` days ahead for input ticker symbol
+    - Assumes the data required for prediction already exists
+- Data Collector: <br/>
+    - Collects data to serve the Price Predictor module
+    - Wrapped in a runnable scheduled windows service
 
 ### Server Config
 
 In `conf/config.ini`
+
+### Windows Service Config
+
+In `conf/windows_service_config.ini`
 
 ### Logger
 
@@ -228,6 +236,18 @@ Will return the following result:
 }
 ```
 
+### Data Collector
+
+Starts a scheduled windows service whose: <br/>
+
+- Configuration is defined in `conf/windows_service_config.ini`, including:
+    - Service name `SVC_NAME`
+    - Service display name `SVC_DISPLAY_NAME`
+    - [Cron period](https://crontab.guru) `CRON_PERIOD`
+- Collected data from `ticker_list`:
+    - Is defined in `~/data_collector/conf/ticker_list.json` 
+    - Saved into a directory defined in `~src/data_collector/conf/config.ini`
+
 ### Requirements
 
 Python 3
@@ -235,16 +255,33 @@ Python 3
 ### Setup
 
 Create virtual env. Docs [here](https://packaging.python.org/guides/installing-using-pip-and-virtualenv/#creating-a-virtualenv) 
+
+#### To run the `Backend Server`:
+
 ```
-pip install -r requirement.txt
-py src\app.py [-h] [--websocket WEBSOCKET] [--scraper SCRAPPER]
+pip install -r requirements.txt
+python src\app.py [-h] [--websocket WEBSOCKET] [--scraper SCRAPPER]
                [--matcher MATCHER] [--logging LOGGING]
 ```
 
 Where each optional parameter takes in an integer of `{0, 1}` signifying whether or not a module will be started.
 
+For a more detailed description, run:
 ```
-py src\app.py --help
+python src\app.py --help
 ```
 
-For a more detailed description
+#### To run the `Data Collector Windows Service`:
+
+```
+pip install -r requirements.txt
+python src\data_collector_service.py install
+python src\data_collector_service.py start
+```
+
+Refer to `/docs/TROUBLESHOOT.md` for any issue encountered
+
+For a more detailed description, run:
+```
+python src\data_collector_service.py --help
+```

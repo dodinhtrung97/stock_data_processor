@@ -6,7 +6,7 @@ import itertools
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 
-def setup_logging(file_name, default_level='DEBUG'):
+def setup_logging_with_config(file_name, default_level='DEBUG'):
     path = os.path.join(DIR_PATH, '..', '..', '..', 'conf', file_name)
     env_key = os.getenv('LOG_CFG', None)
 
@@ -35,6 +35,14 @@ def get_server_config():
 
     return config
 
+def get_windows_service_config():
+    config = configparser.ConfigParser()
+    DIR_PATH = os.path.dirname(os.path.realpath(__file__))
+    path = os.path.join(DIR_PATH, '..', '..', '..', 'conf', 'windows_service_config.ini')
+    config.read(path)
+
+    return config
+
 def get_verb_dict(logger):
     file_name = 'verb_dict.json'
     DIR_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -44,17 +52,6 @@ def get_verb_dict(logger):
     except IOError as e:
         logger.error('Failed to read file {}. Exception follows. {}'.format(file_name, e))
         raise Exception('Failed to read file {}. Exception follows. {}'.format(file_name, e))
-
-def get_windows_service_config(logger):
-    file_name = 'windows_service_config.json'
-    DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-    verb_dict = os.path.join(DIR_PATH, '..', '..', '..', 'conf', 'windows_service_config.json')
-    try:
-        with open(verb_dict, 'r') as f: return json.load(f)
-    except IOError as e:
-        logger.error('Failed to read file {}. Exception follows. {}'.format(file_name, e))
-        raise Exception('Failed to read file {}. Exception follows. {}'.format(file_name, e))
-
 
 def reversed_enumerate(sequence, start):
     sequence = sequence[:start]
