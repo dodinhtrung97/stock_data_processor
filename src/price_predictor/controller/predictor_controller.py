@@ -21,7 +21,7 @@ def predict_url(ticker_symbol):
     params = request.args.to_dict()
     days_ahead = int(params['daysAhead'])
 
-    ticker_symbols = get_ticker_list()
+    ticker_symbols = get_ticker_list()['tickers']
 
     # Test Data Collector with multi-threads
     # No need to run 2 lines below if Data Collector is set independently

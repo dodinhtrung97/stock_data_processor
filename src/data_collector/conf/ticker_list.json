@@ -1,1 +1,7 @@
-["AMZN", "BKNG", "GOOGL", "GOOG", "ATRI", "IRDMB", "MELI", "CSGP", "ISRG", "EQIX", "CACC", "FCNCA", "UHAL", "CHTR", "TREE", "COKE", "ORLY", "NFLX", "ULTA", "ALGN", "REGN", "ILMN", "ONEQ", "MSG", "AVGO", "MKTX", "NWLI", "ADBE", "NTES", "ABMD", "MLAB", "IDXX", "COST", "INTU", "SIVB", "TSLA", "BIIB", "ICUI", "IAC", "DJCO", "CTAS", "SBAC", "WDAY", "ASML", "TECH", "ERIE", "SOXX", "HIFS", "LRCX", "VRSN", "AAPL", "ZBRA", "ANSS", "TTD", "CME", "FB", "QQQ", "POOL", "IJT", "GWPH", "WINA", "ESGR", "WLTW", "LFUS", "LULU", "STRA", "ADSK", "AMGN", "VRTX", "CBRL", "SAGE", "OLED", "JJSF", "ITIC", "WDFC", "NVDA", "ADP", "VONG", "JKI", "BIDU", "SAFM", "EEFT", "LANC", "IPGP", "ALGT", "ODFL", "VTWG", "FFIV", "DHIL", "VRSK", "MASI", "PNRG", "ESLT", "NDSN", "WIX", "MIDD", "HELE", "MSTR", "JAZZ", "ICLR"]
+{
+	"tickers": ["AMZN", "BKNG", "GOOGL", "GOOG", "ATRI", "IRDMB", "MELI", "CSGP", "ISRG", 
+				"EQIX", "CACC", "FCNCA", "UHAL", "CHTR", "TREE", "COKE", "ORLY", "NFLX", 
+				"ULTA", "ALGN", "REGN", "ILMN", "ONEQ", "MSG", "AVGO", "MKTX", "NWLI", "ADBE", 
+				"NTES", "ABMD", "MLAB", "IDXX", "COST", "INTU", "SIVB", "TSLA", "BIIB", "ICUI", 
+				]
+}

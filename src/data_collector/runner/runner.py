@@ -70,7 +70,6 @@ class Runner():
             threads.append(thread)
 
         for _, thread in enumerate(threads):
-            self.LOGGER.info("Thread: {}".format(thread))
             thread.start()
 
         for _, thread in enumerate(threads):

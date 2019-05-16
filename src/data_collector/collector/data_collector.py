@@ -52,7 +52,7 @@ class DataCollector:
         if set(necessary_columns).issubset(set(df.columns.to_list())):
             df = df[necessary_columns]
         else:
-            raise ValueError("There are not enough necessary columns from dataFrame")
+            raise ValueError("Missing columns from dataFrame")
 
         return df
 
@@ -71,14 +71,14 @@ class DataCollector:
         df = None
         ticker_symbol = ticker_symbol.upper()
         try:
-            if start is not None:
-                self.LOGGER.info("Collect data for {} from {}".format(ticker_symbol, start))
+            if start:
+                self.LOGGER.info("Collecting data for {} from {}".format(ticker_symbol, start))
                 df = get_historical_data(ticker_symbol, start=start, end=datetime.now(), output_format='pandas')
             else:
-                self.LOGGER.info("Collect data for {} for {} year(s)".format(ticker_symbol, self.period))
+                self.LOGGER.info("Collecting data for {} for {} year(s)".format(ticker_symbol, self.period))
                 df = get_historical_data(ticker_symbol, start=(datetime.now() - relativedelta(years=self.period)), end=datetime.now(), output_format='pandas')
         except:
-            raise ValueError("Cannot get data for {} from data source online".format(ticker_symbol))
+            raise ValueError("Failed to retrieve data for ticker {} from iexfinance, please check your internet connection".format(ticker_symbol))
         df = self.clean_data(df)
 
         return df
@@ -98,7 +98,7 @@ class DataCollector:
         """
         df = None
         ticker_symbol = ticker_symbol.upper()
-        DataCollector.LOGGER.info("Load data for {}".format(ticker_symbol))
+        DataCollector.LOGGER.info("Loading data for {}".format(ticker_symbol))
         df = load_dataframe_from_csv(ticker_symbol)
         if df is not None:
             df.index = df['date']
@@ -147,7 +147,7 @@ class DataCollector:
         df = self.load_data_for_ticker(ticker_symbol)
         if df is not None:
             if not data_is_lastest(df):
-                self.LOGGER.info("Update data for {}".format(ticker_symbol))
+                self.LOGGER.info("Updating data for {}".format(ticker_symbol))
                 start = pd.to_datetime(df.tail(1).index.values[0]).date() + relativedelta(days=1)
                 df_more = self.collect_data_for_ticker(ticker_symbol, start=start)
                 self.append_data_for_ticker(df_more, ticker_symbol)

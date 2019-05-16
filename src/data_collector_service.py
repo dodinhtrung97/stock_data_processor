@@ -10,6 +10,7 @@ import croniter
 import datetime
 
 from web_scrapper.utils.utils import *
+from data_collector.runner.runner import Runner as DataCollector
 
 class DataCollectorService(win32serviceutil.ServiceFramework):
 
@@ -68,6 +69,8 @@ class DataCollectorService(win32serviceutil.ServiceFramework):
 
         if is_cron_updated:
             self.LOGGER.info("HIT @ time: {}".format(now))
+            data_collector = DataCollector(self.WINDOWS_SERVICE_CONFIG['ticker'], num_threads=4)
+            data_collector.run()
         else:
             self.LOGGER.info("@ time: {}, prev_cron: {}, next_cron: {}".format(now, prev_cron, next_cron))
 
