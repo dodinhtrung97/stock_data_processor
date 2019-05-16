@@ -35,14 +35,6 @@ def get_server_config():
 
     return config
 
-def get_windows_service_config():
-    config = configparser.ConfigParser()
-    DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-    path = os.path.join(DIR_PATH, '..', '..', '..', 'conf', 'windows_service_config.ini')
-    config.read(path)
-
-    return config
-
 def get_verb_dict(logger):
     file_name = 'verb_dict.json'
     DIR_PATH = os.path.dirname(os.path.realpath(__file__))

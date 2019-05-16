@@ -240,7 +240,7 @@ Will return the following result:
 
 Starts a scheduled windows service whose: <br/>
 
-- Configuration is defined in `conf/windows_service_config.ini`, including:
+- Configuration is defined in `conf/config.ini` session `SERVICE`, including:
     - Service name `SVC_NAME`
     - Service display name `SVC_DISPLAY_NAME`
     - [Cron period](https://crontab.guru) `CRON_PERIOD`

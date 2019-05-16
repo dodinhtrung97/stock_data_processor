@@ -17,7 +17,7 @@ class DataCollectorService(win32serviceutil.ServiceFramework):
     setup_logging_with_config('windows_service_logging.yaml')
 
     LOGGER = logging.getLogger(__name__)
-    WINDOWS_SERVICE_CONFIG = get_windows_service_config()
+    WINDOWS_SERVICE_CONFIG = get_server_config()
 
     _svc_name_ = WINDOWS_SERVICE_CONFIG['SERVICE']['SVC_NAME']
     _svc_display_name_ = WINDOWS_SERVICE_CONFIG['SERVICE']['SVC_DISPLAY_NAME']
