@@ -17,9 +17,9 @@ with open(path.join(here, 'requirements.txt')) as f:
 	requirements = f.read().splitlines()
 
 setup(
-    name='news_headline_scrapper',
+    name='trade-advisor',
     version='0.0.1',
-    description='A news headlines scrapper for stock market news',
+    description='Trade Advisor',
     long_description=long_description,
     long_description_content_type='text/markdown',
 
