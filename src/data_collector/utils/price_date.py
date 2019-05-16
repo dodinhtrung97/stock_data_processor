@@ -17,6 +17,7 @@ def get_lastest_price_day():
     """
     delta_days = 1
     weekday = datetime.today().weekday()
+    
     if weekday == 6:
         delta_days = 2
         
@@ -40,7 +41,6 @@ def data_is_lastest(df):
     (Bool)
     """
     lastest_price_date = get_lastest_price_day()
-    if pd.to_datetime(df.tail(1).index.values[0]).date() == lastest_price_date:
-        return True
-    return False
-        
+
+    return pd.to_datetime(df.tail(1).index.values[0]).date() == lastest_price_date
+ 

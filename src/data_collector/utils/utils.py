@@ -13,6 +13,7 @@ def get_collector_config():
 def get_ticker_list():
     dir_path = os.path.dirname(os.path.realpath(__file__))
     file_name = os.path.join(dir_path, '..', 'conf', 'ticker_list.json')
+    
     try:
         with open(file_name, 'r') as f:
             return json.load(f)

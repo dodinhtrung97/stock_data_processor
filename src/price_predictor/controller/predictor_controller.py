@@ -21,11 +21,9 @@ def predict_url(ticker_symbol):
     params = request.args.to_dict()
     days_ahead = int(params['daysAhead'])
 
-    ticker_symbols = get_ticker_list()['tickers']
-
     # Test Data Collector with multi-threads
     # No need to run 2 lines below if Data Collector is set independently
-    collector_runner = Runner(ticker_symbols, num_threads=10)
+    collector_runner = Runner(num_threads=10)
     collector_runner.run()
     
     predictor = LinearRegPredictor(DataCollector.load_data_for_ticker(ticker_symbol), days_ahead)

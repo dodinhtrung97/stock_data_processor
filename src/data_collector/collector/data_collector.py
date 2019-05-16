@@ -6,6 +6,7 @@ from iexfinance.stocks import get_historical_data
 from datetime import datetime
 from ..utils.price_date import *
 from ..utils.data_io import *
+from requests.exceptions import ConnectionError
 
 class DataCollector:
     """
@@ -26,7 +27,7 @@ class DataCollector:
 
     def validate_inputs(self):
         """
-        Validates the inputs to Collector
+        Validate the inputs to Collector
         """
         if self.period < 1:
             raise ValueError("Parameter 'period' must be greater than 0")
@@ -43,12 +44,13 @@ class DataCollector:
         ----------
         df (DataFrame): Columns['open', 'high', 'low', 'close', 'volume'], index['date']
         """
-        self.LOGGER.info("Clean data")
-        # Remove rows that contain NaN values
+        self.LOGGER.debug("Clean data")
+
         df = df.dropna()
         # Get necessary columns: [open, close, high, low, volume]
         df.columns = map(str.lower, df)
         necessary_columns = ['open', 'high', 'low', 'close', 'volume']
+
         if set(necessary_columns).issubset(set(df.columns.to_list())):
             df = df[necessary_columns]
         else:
@@ -68,17 +70,19 @@ class DataCollector:
         ----------
         df (DataFrame): Columns['open', 'high', 'low', 'close', 'volume'], index['date']
         """
-        df = None
         ticker_symbol = ticker_symbol.upper()
+        df = None
+        
         try:
             if start:
-                self.LOGGER.info("Collecting data for {} from {}".format(ticker_symbol, start))
+                self.LOGGER.debug("Collecting data for {} from {}".format(ticker_symbol, start))
                 df = get_historical_data(ticker_symbol, start=start, end=datetime.now(), output_format='pandas')
             else:
-                self.LOGGER.info("Collecting data for {} for {} year(s)".format(ticker_symbol, self.period))
+                self.LOGGER.debug("Collecting data for {} for {} year(s)".format(ticker_symbol, self.period))
                 df = get_historical_data(ticker_symbol, start=(datetime.now() - relativedelta(years=self.period)), end=datetime.now(), output_format='pandas')
-        except:
-            raise ValueError("Failed to retrieve data for ticker {} from iexfinance, please check your internet connection".format(ticker_symbol))
+        except ConnectionError as e:
+            raise Exception("Failed to retrieve data for ticker {} from iexfinance, please check your internet connection. Exception follows. {}".format(ticker_symbol, e))
+        
         df = self.clean_data(df)
 
         return df
@@ -96,14 +100,16 @@ class DataCollector:
         ----------
         df (DataFrame): Columns['open', 'high', 'low', 'close', 'volume'], index['date']
         """
-        df = None
+        DataCollector.LOGGER.debug("Loading data for {}".format(ticker_symbol))
+
         ticker_symbol = ticker_symbol.upper()
-        DataCollector.LOGGER.info("Loading data for {}".format(ticker_symbol))
+        df = None
         df = load_dataframe_from_csv(ticker_symbol)
+
         if df is not None:
             df.index = df['date']
             df = df.drop(['date'], 1)
-            DataCollector.LOGGER.info("Load successfully")
+            DataCollector.LOGGER.debug("Load successfully")
 
         return df
 
@@ -142,12 +148,14 @@ class DataCollector:
         ----------
         ticker_symbol (String): Stock code, eg: AAPL for Apple Inc.
         """
-        df = None
         ticker_symbol = ticker_symbol.upper()
+        df = None
         df = self.load_data_for_ticker(ticker_symbol)
+
         if df is not None:
             if not data_is_lastest(df):
-                self.LOGGER.info("Updating data for {}".format(ticker_symbol))
+                self.LOGGER.debug("Updating data for {}".format(ticker_symbol))
+
                 start = pd.to_datetime(df.tail(1).index.values[0]).date() + relativedelta(days=1)
                 df_more = self.collect_data_for_ticker(ticker_symbol, start=start)
                 self.append_data_for_ticker(df_more, ticker_symbol)
@@ -160,6 +168,7 @@ class DataCollector:
         Update data for tickers
         """
         self.validate_inputs()
+
         if self.ticker_symbols:
             for _, ticker_symbol in enumerate(self.ticker_symbols):
                 self.update_data_for_ticker(ticker_symbol)
