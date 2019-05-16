@@ -23,7 +23,7 @@ def predict_url(ticker_symbol):
 
     # Test Data Collector with multi-threads
     # No need to run 2 lines below if Data Collector is set independently
-    collector_runner = Runner(num_threads=10)
+    collector_runner = Runner(num_threads=4)
     collector_runner.run()
     
     predictor = LinearRegPredictor(DataCollector.load_data_for_ticker(ticker_symbol), days_ahead)

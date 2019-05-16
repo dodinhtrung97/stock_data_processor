@@ -44,8 +44,6 @@ class DataCollector:
         ----------
         df (DataFrame): Columns['open', 'high', 'low', 'close', 'volume'], index['date']
         """
-        self.LOGGER.debug("Clean data")
-
         df = df.dropna()
         # Get necessary columns: [open, close, high, low, volume]
         df.columns = map(str.lower, df)
@@ -83,6 +81,8 @@ class DataCollector:
         except ConnectionError as e:
             raise Exception("Failed to retrieve data for ticker {} from iexfinance, please check your internet connection. Exception follows. {}".format(ticker_symbol, e))
         
+        self.LOGGER.debug("Cleaning data for {}".format(ticker_symbol))
+
         df = self.clean_data(df)
 
         return df
@@ -100,9 +100,9 @@ class DataCollector:
         ----------
         df (DataFrame): Columns['open', 'high', 'low', 'close', 'volume'], index['date']
         """
+        ticker_symbol = ticker_symbol.upper()
         DataCollector.LOGGER.debug("Loading data for {}".format(ticker_symbol))
 
-        ticker_symbol = ticker_symbol.upper()
         df = None
         df = load_dataframe_from_csv(ticker_symbol)
 
