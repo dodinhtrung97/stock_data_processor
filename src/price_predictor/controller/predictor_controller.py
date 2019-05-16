@@ -5,6 +5,7 @@ import os
 sys.path.append("..")
 from data_collector.collector.data_collector import DataCollector
 from data_collector.utils.utils import get_ticker_list
+from data_collector.runner.runner import Runner
 from ..predictor.linear_regression_predictor import LinearRegPredictor
 from flask import Blueprint, abort, request, jsonify, Response
 from flask_restful import reqparse
@@ -22,10 +23,12 @@ def predict_url(ticker_symbol):
 
     ticker_symbols = get_ticker_list()
 
-    collector = DataCollector(ticker_symbols=ticker_symbols, period=3)
-    collector.run()
+    # Test Data Collector with multi-threads
+    # No need to run 2 lines below if Data Collector is set independently
+    collector_runner = Runner(ticker_symbols, num_threads=10)
+    collector_runner.run()
     
-    predictor = LinearRegPredictor(collector.load_data_for_ticker(ticker_symbol), days_ahead)
+    predictor = LinearRegPredictor(DataCollector.load_data_for_ticker(ticker_symbol), days_ahead)
     predictor.run()
 
     response = jsonify({"resultSet": predictor.results}), 200

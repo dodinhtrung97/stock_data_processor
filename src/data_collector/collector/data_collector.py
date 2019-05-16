@@ -1,4 +1,5 @@
 import logging
+import time
 
 from iexfinance.stocks import Stock
 from iexfinance.stocks import get_historical_data
@@ -82,6 +83,7 @@ class DataCollector:
 
         return df
 
+    @classmethod
     def load_data_for_ticker(self, ticker_symbol):
         """
         Load data for ticker
@@ -96,12 +98,12 @@ class DataCollector:
         """
         df = None
         ticker_symbol = ticker_symbol.upper()
-        self.LOGGER.info("Load data for {}".format(ticker_symbol))
+        DataCollector.LOGGER.info("Load data for {}".format(ticker_symbol))
         df = load_dataframe_from_csv(ticker_symbol)
         if df is not None:
             df.index = df['date']
             df = df.drop(['date'], 1)
-            self.LOGGER.info("Load successfully")
+            DataCollector.LOGGER.info("Load successfully")
 
         return df
 
@@ -158,28 +160,6 @@ class DataCollector:
         Update data for tickers
         """
         self.validate_inputs()
-        if self.ticker_symbols is not None:
-            for ticker_symbol in self.ticker_symbols:
+        if self.ticker_symbols:
+            for _, ticker_symbol in enumerate(self.ticker_symbols):
                 self.update_data_for_ticker(ticker_symbol)
-
-
-
-
-
-        
-        
-
-
-
-
-            
-        
-        
-
-        
-
-
-
-    
-
-        
