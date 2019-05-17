@@ -28,7 +28,7 @@ class Runner():
 
     def validate_inputs(self):
         """
-        Validates the inputs to Runner
+        Validate the inputs to Runner
         """
         if self.num_threads > len(self.tickers):
             raise ValueError("Parameter 'num_threads' must be not greater than number of ticker")
@@ -51,23 +51,14 @@ class Runner():
 
         self.data_collectors = [DataCollector(ticker_bin) for ticker_bin in ticker_bins]
 
-    def run_data_colector(self, data_collector):
-        """
-        Execute a DataCollector
-
-        Parameters
-        ----------
-        data_collector (DataCollector)
-        """
-        data_collector.run()
-
     def run(self):
         """
         Execute multi-threads in data collecting process
         """
         threads = []
+        
         for _, data_collector in enumerate(self.data_collectors):
-            thread = threading.Thread(target=self.run_data_colector, args=[data_collector,])
+            thread = threading.Thread(target=data_collector.run)
             threads.append(thread)
 
         for _, thread in enumerate(threads):
