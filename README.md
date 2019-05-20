@@ -285,3 +285,18 @@ For a more detailed description, run:
 ```
 python src\data_collector_service.py --help
 ```
+
+### Deployment
+1. Pull latest code from [git repo](http://10.184.135.104:9001/root/TradeAdvisor)
+2. Build docker image: `docker build -t <image-name> .`
+3. Run: `docker run -p <host-port>:<container-port> -e SERVER=<server-type> -v <source-volume>:<target-volume> <docker-image>` 
+    - Example For api server: `docker run -p 5000:5000 -e SERVER=api -v D:\data:/app/data trade-image`
+    - Example For websocket server: `docker run -p 10005:10005 -e SERVER=ws -v D:\data:/app\data trade-image`
+4. References:
+    - `image-name`: The name of the image. Ex: trade-img
+    - `host-port`: The port on the host machine for binding with the exposed port in containers
+    - `server-type`: The type of server. Currently support 2 types:
+        - `api`: For REST HTTP server. With default port: `5000`
+        - `ws`: For websocket. With default port: `10005`
+    - `source-volume`: The mounting point between host machine's and container's volumes. Here the mounting point on a host machine. Ex: `D:\data`
+    - `target-volume`: The mounting point between host machine's and container's volumes. Here the mounting point on a container. The default for `TradeAdvisor` is `\app\data`

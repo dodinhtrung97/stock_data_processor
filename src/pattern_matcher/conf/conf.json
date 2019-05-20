@@ -1,6 +1,6 @@
 {
     "input": {
-        "dir": "C:\\Trung\\Projects\\BigData\\data",
+        "dir": "/app/data/matcher",
         "format": ".us.txt",
         "recursive": false
     },

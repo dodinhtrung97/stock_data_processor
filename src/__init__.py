@@ -1,6 +1,7 @@
 from flask import Flask
-import logging
+import logging, threading
 from .web_scrapper.utils.utils import *
+from .web_scrapper.websocket.ws_server import WSHandler, WSServer
 
 # Setup logging config
 setup_logging_with_config('logging.yaml')
@@ -18,3 +19,7 @@ def create_app():
     app.register_blueprint(predictor_controller, url_prefix='/api/v0/predictor')
 
     return app
+
+
+def create_ws():
+    return WSServer([('/news', WSHandler)])

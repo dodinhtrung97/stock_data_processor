@@ -2,8 +2,10 @@ import logging
 import sys
 import os
 
-sys.path.append("..")
-from data_collector.collector.data_collector import DataCollector
+from ...data_collector.collector.data_collector import DataCollector
+from ...data_collector.collector.data_collector import DataCollector
+from ...data_collector.utils.utils import get_ticker_list
+from ...data_collector.runner.runner import Runner
 from ..predictor.linear_regression_predictor import LinearRegPredictor
 from flask import Blueprint, abort, request, jsonify, Response
 from flask_restful import reqparse
@@ -24,6 +26,6 @@ def predict_url(ticker_symbol):
     predictor = LinearRegPredictor(DataCollector.load_data_for_ticker(ticker_symbol), days_ahead)
     predictor.run()
 
-    response = jsonify({"resultSet": predictor.results}), 200
+    response = jsonify({"predictions": predictor.results}), 200
 
     return response
