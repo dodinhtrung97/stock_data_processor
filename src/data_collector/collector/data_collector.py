@@ -103,10 +103,9 @@ class DataCollector:
         ticker_symbol = ticker_symbol.upper()
         DataCollector.LOGGER.debug("Loading data for {}".format(ticker_symbol))
 
-        df = None
         df = load_dataframe_from_csv(ticker_symbol)
 
-        if df is not None:
+        if not df.empty:
             df.index = df['date']
             df = df.drop(['date'], 1)
             DataCollector.LOGGER.debug("Load successfully")
@@ -149,10 +148,10 @@ class DataCollector:
         ticker_symbol (String): Stock code, eg: AAPL for Apple Inc.
         """
         ticker_symbol = ticker_symbol.upper()
-        df = None
+
         df = self.load_data_for_ticker(ticker_symbol)
 
-        if df is not None:
+        if not df.empty:
             if not data_is_lastest(df):
                 self.LOGGER.debug("Updating data for {}".format(ticker_symbol))
 
