@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import errno
 
 from .utils import get_collector_config
 
@@ -14,13 +15,14 @@ def save_dataframe_to_csv(df, file_name):
     df (DataFrame)
     file_name (String): Name of file
     """    
-    file_path = os.path.join(CONFIG["PREDICTOR"]["DIR_DATA"], file_name)
+    file_path = os.path.join(CONFIG["COLLECTOR"]["DIR_DATA"], file_name)
 
     if not os.path.exists(os.path.dirname(file_path)):
         try:
             os.makedirs(os.path.dirname(file_path))
         except OSError as e:
-            raise Exception("Cannot make directory {}".format(os.path.dirname(file_path), e))
+            if e.errno != errno.EEXIST:
+                raise Exception("Cannot make directory {}".format(os.path.dirname(file_path), e))
     
     try:
         df.to_csv(file_path)
@@ -40,7 +42,7 @@ def load_dataframe_from_csv(file_name):
     df (DataFrame)
     """    
     df = None
-    file_path = os.path.join(CONFIG["PREDICTOR"]["DIR_DATA"], file_name)
+    file_path = os.path.join(CONFIG["COLLECTOR"]["DIR_DATA"], file_name)
 
     if os.path.exists(file_path):
         try:
@@ -59,7 +61,7 @@ def append_dataframe_to_csv(df, file_name):
     df (DataFrame)
     file_name (String): Name of file
     """    
-    file_path = os.path.join(CONFIG["PREDICTOR"]["DIR_DATA"], file_name)
+    file_path = os.path.join(CONFIG["COLLECTOR"]["DIR_DATA"], file_name)
     
     if os.path.exists(file_path):
         try:

@@ -61,7 +61,7 @@ class LinearRegPredictor:
         Give results of predictor
         """
         if self.df is not None:
-            self.LOGGER.info("Predicting for ticker")
+            self.LOGGER.debug("Predicting")
             self.df['target'] = self.df[self.target].shift(-self.forecast_days)
 
             # X: feature dataset
