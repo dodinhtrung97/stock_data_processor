@@ -1,0 +1,9 @@
+.vscode
+docs
+*-env
+.*ignore
+Dockerfile
+logs/*
+test
+*.md
+__pycache__
