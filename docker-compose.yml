@@ -5,7 +5,7 @@ services:
     ports:
      - "5000:5000"
     volumes:
-     - D:/data:/app/data
+     - C:/Trung/Projects/BigData/trade_advisor/data:/app/data
     command: api
   ws:
     image: trade:v0

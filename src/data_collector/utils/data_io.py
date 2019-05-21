@@ -1,12 +1,13 @@
 import pandas as pd
 import os
 import errno
+from shutil import copy
 
 from .utils import get_collector_config
 
 CONFIG = get_collector_config()
 
-def save_dataframe_to_csv(df, file_name):
+def save_dataframe_to_csv(df, file_name, use_local_storage):
     """
     Save DataFrame to file with format csv
 
@@ -14,8 +15,8 @@ def save_dataframe_to_csv(df, file_name):
     ----------
     df (DataFrame)
     file_name (String): Name of file
-    """    
-    file_path = os.path.join(CONFIG["COLLECTOR"]["DIR_DATA"], file_name)
+    """   
+    file_path = os.path.join(CONFIG["COLLECTOR"]["LOCAL_STORAGE"], file_name)
 
     if not os.path.exists(os.path.dirname(file_path)):
         try:
@@ -29,7 +30,30 @@ def save_dataframe_to_csv(df, file_name):
     except IOError as e:
         raise Exception("Cannot save dataframe to {}.csv. Exception follows. {}".format(file_path, e))
 
-def load_dataframe_from_csv(file_name):
+    if not use_local_storage:
+        copy_local_file_to_remote_storage(file_name)
+
+def append_dataframe_to_csv(df, file_name, use_local_storage):
+    """
+    Append DataFrame to file csv
+
+    Parameters
+    ----------
+    df (DataFrame)
+    file_name (String): Name of file
+    """    
+    file_path = os.path.join(CONFIG["COLLECTOR"]["LOCAL_STORAGE"], file_name)
+    
+    if os.path.exists(file_path):
+        try:
+            df.to_csv(file_path, mode='a', header=False)
+        except IOError as e:
+            raise Exception("Cannot append dataframe to {}.csv. Exception follows. {}".format(file_name, e))
+
+    if not use_local_storage:
+        copy_local_file_to_remote_storage(file_name)
+
+def load_dataframe_from_csv(file_name, use_local_storage):
     """
     Load DataFrame from file csv
 
@@ -42,7 +66,7 @@ def load_dataframe_from_csv(file_name):
     df (DataFrame)
     """    
     df = None
-    file_path = os.path.join(CONFIG["COLLECTOR"]["DIR_DATA"], file_name)
+    file_path = os.path.join(CONFIG["COLLECTOR"]["LOCAL_STORAGE"], file_name) if use_local_storage else os.path.join(CONFIG["COLLECTOR"]["REMOTE_STORAGE"], file_name)
 
     if os.path.exists(file_path):
         try:
@@ -52,19 +76,17 @@ def load_dataframe_from_csv(file_name):
 
     return df
 
-def append_dataframe_to_csv(df, file_name):
+def copy_local_file_to_remote_storage(file_name):
     """
-    Append DataFrame to file csv
+    Copy csv files from local storage to centralized remote storage
+    """
+    local_file_path = os.path.join(CONFIG["COLLECTOR"]["LOCAL_STORAGE"], file_name)
+    remote_file_path = os.path.join(CONFIG["COLLECTOR"]["REMOTE_STORAGE"], file_name)
 
-    Parameters
-    ----------
-    df (DataFrame)
-    file_name (String): Name of file
-    """    
-    file_path = os.path.join(CONFIG["COLLECTOR"]["DIR_DATA"], file_name)
-    
-    if os.path.exists(file_path):
+    if os.path.exists(local_file_path):
         try:
-            df.to_csv(file_path, mode='a', header=False)
+            copy(local_file_path, remote_file_path)
         except IOError as e:
-            raise Exception("Cannot append dataframe to {}.csv. Exception follows. {}".format(file_name, e))
+            raise IOError("Failed to copy file from local storage: {} to remote storage: {}. Exception follows. {}".format(local_file_path, remote_file_path, e))
+        except Exception as e:
+            raise Exception("Failed to copy file with exception. {}".format(e))

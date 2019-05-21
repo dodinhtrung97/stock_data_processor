@@ -18,8 +18,9 @@ def collect_url():
     """
     params = request.args.to_dict()
     num_threads = int(params['numThreads'])
+    use_local_storage = bool(int(params['localStorage']))
 
-    collector_runner = Runner(num_threads)
+    collector_runner = Runner(num_threads, use_local_storage)
     collector_runner.run()
 
     response = jsonify({"status": "Collect successfully!"}), 200

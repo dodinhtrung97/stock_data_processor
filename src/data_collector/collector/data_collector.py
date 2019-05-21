@@ -21,9 +21,10 @@ class DataCollector:
 
     LOGGER = logging.getLogger(__name__)
 
-    def __init__(self, ticker_symbols, period=3):
+    def __init__(self, ticker_symbols, period=3, use_local_storage=False):
         self.ticker_symbols = [ticker_symbol.upper() for ticker_symbol in ticker_symbols]
         self.period = period
+        self.use_local_storage = use_local_storage
 
     def validate_inputs(self):
         """
@@ -87,7 +88,6 @@ class DataCollector:
 
         return df
 
-    @classmethod
     def load_data_for_ticker(self, ticker_symbol):
         """
         Load data for ticker
@@ -103,9 +103,9 @@ class DataCollector:
         ticker_symbol = ticker_symbol.upper()
         DataCollector.LOGGER.debug("Loading data for {}".format(ticker_symbol))
 
-        df = load_dataframe_from_csv(ticker_symbol)
+        df = load_dataframe_from_csv(ticker_symbol, use_local_storage=self.use_local_storage)
 
-        if not df.empty:
+        if df is not None:
             df.index = df['date']
             df = df.drop(['date'], 1)
             DataCollector.LOGGER.debug("Load successfully")
@@ -122,7 +122,7 @@ class DataCollector:
         ticker_symbol (String): Stock code, eg: AAPL for Apple Inc.
         """
         ticker_symbol = ticker_symbol.upper()
-        save_dataframe_to_csv(df, ticker_symbol)
+        save_dataframe_to_csv(df, ticker_symbol, use_local_storage=self.use_local_storage)
 
     def append_data_for_ticker(self, df, ticker_symbol):
         """
@@ -134,7 +134,7 @@ class DataCollector:
         ticker_symbol (String): Stock code, eg: AAPL for Apple Inc.
         """
         ticker_symbol = ticker_symbol.upper()
-        append_dataframe_to_csv(df, ticker_symbol)
+        append_dataframe_to_csv(df, ticker_symbol, use_local_storage=self.use_local_storage)
 
     def update_data_for_ticker(self, ticker_symbol):
         """
@@ -151,7 +151,7 @@ class DataCollector:
 
         df = self.load_data_for_ticker(ticker_symbol)
 
-        if not df.empty:
+        if df is not None:
             if not data_is_lastest(df):
                 self.LOGGER.debug("Updating data for {}".format(ticker_symbol))
 

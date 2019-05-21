@@ -18,10 +18,11 @@ class Runner():
 
     LOGGER = logging.getLogger(__name__)
 
-    def __init__(self, num_threads=4):
+    def __init__(self, num_threads=4, use_local_storage=False):
         self.tickers = get_ticker_list()['tickers']
         self.num_threads = num_threads
         self.data_collectors = None
+        self.use_local_storage = use_local_storage
 
         self.validate_inputs()
         self.create_data_collectors()
@@ -49,7 +50,7 @@ class Runner():
             if bin_idx == len(ticker_bins):
                 bin_idx = 0
 
-        self.data_collectors = [DataCollector(ticker_bin) for ticker_bin in ticker_bins]
+        self.data_collectors = [DataCollector(ticker_bin, use_local_storage=self.use_local_storage) for ticker_bin in ticker_bins]
 
     def run(self):
         """

@@ -57,7 +57,6 @@ class backendServer():
         Register blueprints based on input command line args
         Start Flask Server
         """
-        self.LOGGER.info(self.__controller_dict)
         for controller in self.__controller_dict:
             controller_name = self.__controller_dict[controller]['controller']
             url_prefix = self.__controller_dict[controller]['url_prefix']
