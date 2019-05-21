@@ -287,12 +287,21 @@ python src\data_collector_service.py --help
 ```
 
 ### Deployment
+#### Configurations
+1. Mounting data dir must follow structure:
+
+```
+/data
+    |_ collector
+    |_ matcher
+```
+
 #### Deploy each service individually
 1. Pull latest code from [git repo](http://10.184.135.104:9001/root/TradeAdvisor)
 2. Build docker image: `docker build -t <image-name> .`
 3. Run: `docker run -p <host-port>:<container-port> -v <source-volume>:<target-volume> <docker-image> <server-type>` 
     - Example For api server: `docker run -p 5000:5000 -v D:\data:/app/data trade:v0 api`
-    - Example For websocket server: `docker run -p 10005:10005 -v D:\data:/app\data trade:v0 ws`
+    - Example For websocket server: `docker run -p 10005:10005 -v D:\data:/app/data trade:v0 ws`
 4. References:
     - `image-name`: The tag name of the image. Ex: `trade:v0`
     - `host-port`: The port on the host machine for binding with the exposed port in a container
@@ -301,11 +310,12 @@ python src\data_collector_service.py --help
         - `api`: For REST HTTP server. With default port: `5000`
         - `ws`: For websocket. With default port: `10005`
     - `source-volume`: The mounting point between host machine's and container's volumes. Here the mounting point on a host machine. Ex: `D:\data`
-    - `target-volume`: The mounting point between host machine's and container's volumes. Here the mounting point on a container. The default for `TradeAdvisor` is `\app\data`
+    - `target-volume`: The mounting point between host machine's and container's volumes. Here the mounting point on a container. The default for `TradeAdvisor` is `/app/data`
 
 #### Deploy all services at once
 1. Build TradeAdvisor image: `docker build -t trade:v0 .`
 2. Modify `docker-compose.yml` as following:
+
 ```
     version: '3'
     services:
