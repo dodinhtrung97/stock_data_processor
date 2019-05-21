@@ -17,4 +17,5 @@ RUN python -m textblob.download_corpora
 EXPOSE 5000 10005
 
 # Run start.sh when the container launches
-ENTRYPOINT ./start.sh
+ENTRYPOINT ["./start.sh"]
+CMD ["api"]

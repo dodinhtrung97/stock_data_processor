@@ -1,10 +1,10 @@
 #!/bin/bash
 
-if [ "$SERVER" = "api" ]
+if [ "$1" = "api" ]
 then
     echo "Start API server ..."
-    gunicorn --workers=2 -b 0.0.0.0:5000 trade-advisor-api:app
-elif [ "$SERVER" = "ws" ]
+    gunicorn --workers=4 -b 0.0.0.0:5000 trade-advisor-api:app
+elif [ "$1" = "ws" ]
 then
     echo "Start Websocket server ..."
     python ./trade-advisor-ws.py
