@@ -9,6 +9,10 @@ COPY . /app
 RUN mkdir -p data/collector
 RUN mkdir -p data/matcher
 
+# Make required directories
+RUN mkdir logs
+RUN mkdir data
+
 # Install any needed packages specified in requirements.txt
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 

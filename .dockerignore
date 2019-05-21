@@ -1,10 +1,13 @@
 .vscode
+.git
 docs
 *-env
 .*ignore
 Dockerfile
-logs/*
+docker-compose.yml
+logs
 test
+data
 *.md
 __pycache__
-data
+__pycache*
