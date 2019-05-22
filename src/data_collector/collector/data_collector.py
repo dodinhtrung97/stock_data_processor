@@ -88,7 +88,8 @@ class DataCollector:
 
         return df
 
-    def load_data_for_ticker(self, ticker_symbol):
+    @classmethod
+    def load_data_for_ticker(self, ticker_symbol, use_local_storage):
         """
         Load data for ticker
             
@@ -103,7 +104,8 @@ class DataCollector:
         ticker_symbol = ticker_symbol.upper()
         DataCollector.LOGGER.debug("Loading data for {}".format(ticker_symbol))
 
-        df = load_dataframe_from_csv(ticker_symbol, use_local_storage=self.use_local_storage)
+        df = load_dataframe_from_csv(ticker_symbol=ticker_symbol, 
+                                     use_local_storage=use_local_storage)
 
         if df is not None:
             df.index = df['date']
@@ -149,7 +151,8 @@ class DataCollector:
         """
         ticker_symbol = ticker_symbol.upper()
 
-        df = self.load_data_for_ticker(ticker_symbol)
+        df = self.load_data_for_ticker(ticker_symbol=ticker_symbol, 
+                                        use_local_storage=self.use_local_storage)
 
         if df is not None:
             if not data_is_lastest(df):

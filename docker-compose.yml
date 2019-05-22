@@ -1,14 +1,14 @@
 version: '3'
 services:
   api:
-    image: trade:v0
+    image: trade:v1
     ports:
      - "5000:5000"
     volumes:
      - C:/Trung/Projects/BigData/trade_advisor/data:/app/data
     command: api
   ws:
-    image: trade:v0
+    image: trade:v1
     ports:
      - "10005:10005"
     command: ws
