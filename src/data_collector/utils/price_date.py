@@ -44,3 +44,28 @@ def data_is_lastest(df):
 
     return pd.to_datetime(df.tail(1).index.values[0]).date() == lastest_price_date
  
+def get_future_day(period):
+    """
+    Create list of days in the furture
+
+    Parameters
+    ----------
+    periods (Integer): number of days in future from now
+
+    Returns
+    ----------
+    future_days (List of Date): Time Stamp
+    exclude Saturday and Sunday
+    """
+    num = 0
+    date = datetime.today()
+    future_days = []
+
+    while num < period:
+        if date.weekday() not in (5, 6):
+            future_days.append(date.timestamp())
+            num = num + 1
+        date = date + relativedelta(days=1)
+
+    return future_days
+

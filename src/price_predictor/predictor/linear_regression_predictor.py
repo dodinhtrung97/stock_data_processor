@@ -7,6 +7,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+from data_collector.utils.price_date import get_future_day
 
 class LinearRegPredictor:
     """
@@ -55,9 +56,9 @@ class LinearRegPredictor:
 
     def run(self):
         """
-        Spliting tranining & test dataset for model
-        Training model
-        Calculating metrics to evaluate performance of model
+        Split tranining & test dataset for model
+        Train model
+        Calculate metrics to evaluate performance of model
         Give results of predictor
         """
         if self.df is not None:
@@ -83,6 +84,6 @@ class LinearRegPredictor:
 
             # Creating results as dictionary {key (datetime): predicted value}
             predictive_values = self.model.predict(X_forecast)
-            dates = [(datetime.now() + relativedelta(days = i)).timestamp() for i in range(self.forecast_days)]
-            self.results = dict(zip(dates, predictive_values.tolist()))
+            future_days = get_future_day(self.forecast_days)
+            self.results = dict(zip(future_days, predictive_values.tolist()))
 

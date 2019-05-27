@@ -104,8 +104,7 @@ class DataCollector:
         ticker_symbol = ticker_symbol.upper()
         DataCollector.LOGGER.debug("Loading data for {}".format(ticker_symbol))
 
-        df = load_dataframe_from_csv(ticker_symbol=ticker_symbol, 
-                                     use_local_storage=use_local_storage)
+        df = load_dataframe_from_csv(file_name=ticker_symbol, use_local_storage=use_local_storage)
 
         if df is not None:
             df.index = df['date']
