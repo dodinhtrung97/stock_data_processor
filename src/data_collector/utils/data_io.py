@@ -1,11 +1,13 @@
 import pandas as pd
 import os
 import errno
+import logging
 from shutil import copy
 
 from .utils import get_collector_config
 
 CONFIG = get_collector_config()
+LOGGER = logging.getLogger(__name__)
 
 def save_dataframe_to_csv(df, file_name, use_local_storage):
     """
