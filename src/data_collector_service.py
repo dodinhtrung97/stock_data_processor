@@ -68,7 +68,7 @@ class DataCollectorService(win32serviceutil.ServiceFramework):
             data_collector = DataCollector(num_threads=4)
             data_collector.run()
         else:
-            self.LOGGER.debug("@ time: {}next_cron: {}".format(current_time, next_cron))
+            self.LOGGER.debug("@ time: {}, next_cron: {}".format(current_time, next_cron))
 
         return next_cron
 

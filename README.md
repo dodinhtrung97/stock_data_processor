@@ -273,10 +273,20 @@ python src\app.py --help
 
 #### To run the `Data Collector Windows Service`:
 
+Debug Mode: <br/>
+
+```
+pip install -r requirements.txt
+python src\data_collector_service.py debug --log_dir=<LOG_FOLDER>
+```
+
+Where `LOG_FOLDER` is the absolute path to an existing directory where log files will be created and written into. <br/>
+
+
 ```
 pip install -r requirements.txt
 python src\data_collector_service.py install
-python src\data_collector_service.py start
+python src\data_collector_service.py start --log_dir=<LOG_FOLDER>
 ```
 
 Refer to `/docs/TROUBLESHOOT.md` for any issue encountered
