@@ -8,14 +8,12 @@ import logging
 import schedule 
 import croniter
 import datetime
+import os
 
 from web_scrapper.utils.utils import *
 from data_collector.runner.runner import Runner as DataCollector
 
 class DataCollectorService(win32serviceutil.ServiceFramework):
-
-    setup_logging_with_config('windows_service_logging.yaml')
-
     LOGGER = logging.getLogger(__name__)
     WINDOWS_SERVICE_CONFIG = get_server_config()
 
@@ -30,9 +28,13 @@ class DataCollectorService(win32serviceutil.ServiceFramework):
         win32serviceutil.ServiceFramework.__init__(self, args)
         socket.setdefaulttimeout(60)
 
+        self.log_dir = None
         self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)
         self.stop_requested = False
         self.cron_period = self.WINDOWS_SERVICE_CONFIG['SERVICE']['CRON_PERIOD'].strip()
+
+        self.process_cmd_args(args=args)
+        setup_service_logging(log_dir_path=self.log_dir)
 
     def SvcStop(self):
         '''
@@ -62,20 +64,38 @@ class DataCollectorService(win32serviceutil.ServiceFramework):
         is_cron_updated = False if not prev_cron else prev_cron != next_cron
 
         if is_cron_updated:
-            self.LOGGER.debug("HIT @ time: {}".format(current_time))
+            self.LOGGER.info("Collecting data at time: {}".format(current_time))
             data_collector = DataCollector(num_threads=4)
             data_collector.run()
         else:
-            self.LOGGER.debug("@ time: {}, prev_cron: {}, next_cron: {}".format(current_time, prev_cron, next_cron))
+            self.LOGGER.debug("@ time: {}next_cron: {}".format(current_time, next_cron))
 
         return next_cron
 
     def main(self):
+        self.LOGGER.info("Started scheduled job with cron: {}".format(self.WINDOWS_SERVICE_CONFIG['SERVICE']['CRON_PERIOD'].strip()))
         current_cron = None
 
         while not self.stop_requested:
             current_cron = self.scheduled_work(current_cron)
             time.sleep(1)
+
+    def process_cmd_args(self, args):
+        """
+        Process command line argument, retrives log directory path
+        """
+        ARG_NAME = 'log_dir'
+
+        if len(args) == 2:
+            args = args[1:][0]
+            arg, value = args.split('-')[-1].split('=')
+
+            if not os.path.isdir(value):
+                raise OSError("Input path does not exists, failed to create log files for service")
+
+            self.log_dir = value if arg == ARG_NAME else None
+
+            if not self.log_dir: os.exit(1)
 
 if __name__ == '__main__':
     DataCollectorService.parse_command_line()

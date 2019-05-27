@@ -80,6 +80,7 @@ class DataCollector:
                 self.LOGGER.debug("Collecting data for {} for {} year(s)".format(ticker_symbol, self.period))
                 df = get_historical_data(ticker_symbol, start=(datetime.now() - relativedelta(years=self.period)), end=datetime.now(), output_format='pandas')
         except ConnectionError as e:
+            self.LOGGER.error("Failed to retrieve data for ticker {} from iexfinance, please check your internet connection. Exception follows. {}".format(ticker_symbol, e))
             raise Exception("Failed to retrieve data for ticker {} from iexfinance, please check your internet connection. Exception follows. {}".format(ticker_symbol, e))
         
         self.LOGGER.debug("Cleaning data for {}".format(ticker_symbol))

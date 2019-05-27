@@ -22,7 +22,7 @@ def predict_url(ticker_symbol):
     params = request.args.to_dict()
     days_ahead = int(params['daysAhead'])
 
-    predictor = LinearRegPredictor(DataCollector.load_data_for_ticker(ticker_symbol, False), days_ahead)
+    predictor = LinearRegPredictor(DataCollector.load_data_for_ticker(ticker_symbol, True), days_ahead)
     predictor.run()
 
     response = jsonify({"predictions": predictor.results}), 200

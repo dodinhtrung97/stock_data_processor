@@ -12,7 +12,7 @@ from web_scrapper.websocket.ws_server import *
 class backendServer():
     
     # Setup logging config
-    setup_logging_with_config('logging.yaml')
+    setup_server_logging()
 
     APP = Flask(__name__)
     SERVER_CONFIG = get_server_config()
