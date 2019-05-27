@@ -108,7 +108,7 @@ class DataCollector:
         df = load_dataframe_from_csv(file_name=ticker_symbol, 
                                      use_local_storage=use_local_storage)
 
-        if df is not None:
+        if not df.empty:
             df.index = df['date']
             df = df.drop(['date'], 1)
             DataCollector.LOGGER.debug("Load successfully")
@@ -155,7 +155,7 @@ class DataCollector:
         df = self.load_data_for_ticker(ticker_symbol=ticker_symbol, 
                                         use_local_storage=self.use_local_storage)
 
-        if df is not None:
+        if not df.empty:
             if not data_is_lastest(df):
                 self.LOGGER.debug("Updating data for {}".format(ticker_symbol))
 
@@ -165,6 +165,8 @@ class DataCollector:
         else:
             df = self.collect_data_for_ticker(ticker_symbol, start=None)
             self.save_data_for_ticker(df, ticker_symbol)
+
+        self.LOGGER.info("Collected and updated data for {}".format(ticker_symbol))
 
     def run(self):
         """

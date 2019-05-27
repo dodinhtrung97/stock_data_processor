@@ -68,7 +68,7 @@ class DataCollectorService(win32serviceutil.ServiceFramework):
             data_collector = DataCollector(num_threads=4)
             data_collector.run()
         else:
-            self.LOGGER.debug("@ time: {}next_cron: {}".format(current_time, next_cron))
+            self.LOGGER.debug("@ time: {}, next_cron: {}".format(current_time, next_cron))
 
         return next_cron
 
@@ -84,11 +84,11 @@ class DataCollectorService(win32serviceutil.ServiceFramework):
         """
         Process command line argument, retrives log directory path
         """
-        ARG_NAME = 'log_dir'
+        ARG_NAME = '--log_dir'
 
         if len(args) == 2:
             args = args[1:][0]
-            arg, value = args.split('-')[-1].split('=')
+            arg, value = args.split('=', 1)
 
             if not os.path.isdir(value):
                 raise OSError("Input path does not exists, failed to create log files for service")

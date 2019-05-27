@@ -1,5 +1,7 @@
 import numpy as np
 import logging
+import pandas as pd
+import os
 
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
@@ -7,6 +9,10 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+from data_collector.utils.price_date import get_future_day
+from ..utils.utils import get_predictor_config
+
+CONFIG = get_predictor_config()
 
 class LinearRegPredictor:
     """
@@ -27,10 +33,11 @@ class LinearRegPredictor:
 
     LOGGER = logging.getLogger(__name__)
 
-    def __init__(self, df, forecast_days):
-        self.df = df
+    def __init__(self, ticker_symbol, forecast_days):
+        self.ticker_symbol = ticker_symbol
         self.forecast_days = forecast_days
 
+        self.df = pd.DataFrame()
         self.features = ["open", "close", "high", "low", "volume"]
         self.target = ["close"]
         self.model = LinearRegression()
@@ -46,21 +53,51 @@ class LinearRegPredictor:
         if self.forecast_days < 1:
             raise ValueError("Parameter 'forecast_days' must be greater than 0")
 
-        if self.df is not None:
+        if not self.df.empty:
             if not set(self.features).issubset(self.df.columns.to_list()):
                 raise ValueError("Feature columns must be exist in DataFrame")
 
             if not set(self.target).issubset(self.df.columns.to_list()):
                 raise ValueError("Target columns must be exist in DataFrame")
 
+    def load_data_for_ticker(self):
+        """
+        Load data for ticker
+            
+        Parameters
+        ----------
+        ticker_symbol (String): Stock code, eg: AAPL for Apple Inc.
+
+        Returns
+        ----------
+        df (DataFrame): Columns['open', 'high', 'low', 'close', 'volume'], index['date']
+        """
+        self.ticker_symbol = self.ticker_symbol.upper()
+        self.LOGGER.debug("Loading data for {}".format(self.ticker_symbol))
+
+        file_path = os.path.join(CONFIG["PREDICTOR"]["STORAGE"], self.ticker_symbol)
+
+        if os.path.exists(file_path):
+            try:
+                self.df = pd.read_csv(file_path)
+            except IOError as e:
+                raise Exception("Cannot load dataframe from {}.csv. Exception follows. {}".format(self.ticker_symbol, e))
+
+        if not self.df.empty:
+            self.df.index = self.df['date']
+            self.df = self.df.drop(['date'], 1)
+            self.LOGGER.debug("Load successfully")
+
     def run(self):
         """
-        Spliting tranining & test dataset for model
-        Training model
-        Calculating metrics to evaluate performance of model
+        Split training & test dataset for model
+        Train model
+        Calculate metrics to evaluate performance of model
         Give results of predictor
         """
-        if self.df is not None:
+        self.load_data_for_ticker()
+
+        if not self.df.empty:
             self.LOGGER.debug("Predicting")
             self.df['target'] = self.df[self.target].shift(-self.forecast_days)
 
@@ -83,6 +120,5 @@ class LinearRegPredictor:
 
             # Creating results as dictionary {key (datetime): predicted value}
             predictive_values = self.model.predict(X_forecast)
-            dates = [(datetime.now() + relativedelta(days = i)).timestamp() for i in range(self.forecast_days)]
-            self.results = dict(zip(dates, predictive_values.tolist()))
-
+            future_days = get_future_day(self.forecast_days)
+            self.results = dict(zip(future_days, predictive_values.tolist()))
