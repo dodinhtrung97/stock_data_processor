@@ -3,7 +3,6 @@ import os
 import errno
 import logging
 from shutil import copy
-
 from .utils import get_collector_config
 
 CONFIG = get_collector_config()
@@ -67,7 +66,7 @@ def load_dataframe_from_csv(file_name, use_local_storage):
     ----------
     df (DataFrame)
     """    
-    df = None
+    df = pd.DataFrame()
     file_path = os.path.join(CONFIG["COLLECTOR"]["LOCAL_STORAGE"], file_name) if use_local_storage else os.path.join(CONFIG["COLLECTOR"]["REMOTE_STORAGE"], file_name)
 
     if os.path.exists(file_path):
