@@ -7,6 +7,10 @@ import itertools
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 
 def setup_server_logging(default_level='DEBUG'):
+    """
+    Set server logging config
+    See: conf/logging.yaml
+    """
     path = os.path.join(DIR_PATH, '..', '..', '..', 'conf', 'logging.yaml')
     env_key = os.getenv('LOG_CFG', None)
 
@@ -20,6 +24,10 @@ def setup_server_logging(default_level='DEBUG'):
         logging.basicConfig(level=default_level)
 
 def setup_service_logging(log_dir_path, default_level='DEBUG'):
+    """
+    Set windows service logging config
+    See: conf/windows_service_logging.yaml
+    """
     path = os.path.join(DIR_PATH, '..', '..', '..', 'conf', 'windows_service_logging.yaml')
     env_key = os.getenv('SERVICE_LOG_CFG', None)
 

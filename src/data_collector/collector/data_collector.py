@@ -166,6 +166,8 @@ class DataCollector:
             df = self.collect_data_for_ticker(ticker_symbol, start=None)
             self.save_data_for_ticker(df, ticker_symbol)
 
+        self.LOGGER.info("Collected and updated data for {}".format(ticker_symbol))
+
     def run(self):
         """
         Update data for tickers

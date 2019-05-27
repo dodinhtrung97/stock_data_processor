@@ -8,6 +8,10 @@ from .utils import get_collector_config
 CONFIG = get_collector_config()
 LOGGER = logging.getLogger(__name__)
 
+DIR_PATH = os.path.dirname(os.path.realpath(__file__))
+LOCAL_STORAGE_PATH = os.path.join(DIR_PATH, '..', '..', '..', CONFIG["COLLECTOR"]["LOCAL_STORAGE"])
+REMOTE_STORAGE_PATH = os.path.join(DIR_PATH, '..', '..', '..', CONFIG["COLLECTOR"]["REMOTE_STORAGE"])
+
 def save_dataframe_to_csv(df, file_name, use_local_storage):
     """
     Save DataFrame to file with format csv
@@ -17,7 +21,7 @@ def save_dataframe_to_csv(df, file_name, use_local_storage):
     df (DataFrame)
     file_name (String): Name of file
     """   
-    file_path = os.path.join(CONFIG["COLLECTOR"]["LOCAL_STORAGE"], file_name)
+    file_path = os.path.join(LOCAL_STORAGE_PATH, file_name)
 
     if not os.path.exists(os.path.dirname(file_path)):
         try:
@@ -43,7 +47,7 @@ def append_dataframe_to_csv(df, file_name, use_local_storage):
     df (DataFrame)
     file_name (String): Name of file
     """    
-    file_path = os.path.join(CONFIG["COLLECTOR"]["LOCAL_STORAGE"], file_name)
+    file_path = os.path.join(LOCAL_STORAGE_PATH, file_name)
     
     if os.path.exists(file_path):
         try:
@@ -67,7 +71,7 @@ def load_dataframe_from_csv(file_name, use_local_storage):
     df (DataFrame)
     """    
     df = pd.DataFrame()
-    file_path = os.path.join(CONFIG["COLLECTOR"]["LOCAL_STORAGE"], file_name) if use_local_storage else os.path.join(CONFIG["COLLECTOR"]["REMOTE_STORAGE"], file_name)
+    file_path = os.path.join(LOCAL_STORAGE_PATH, file_name) if use_local_storage else os.path.join(REMOTE_STORAGE_PATH, file_name)
 
     if os.path.exists(file_path):
         try:
@@ -81,8 +85,8 @@ def copy_local_file_to_remote_storage(file_name):
     """
     Copy csv files from local storage to centralized remote storage
     """
-    local_file_path = os.path.join(CONFIG["COLLECTOR"]["LOCAL_STORAGE"], file_name)
-    remote_file_path = os.path.join(CONFIG["COLLECTOR"]["REMOTE_STORAGE"], file_name)
+    local_file_path = os.path.join(LOCAL_STORAGE_PATH, file_name)
+    remote_file_path = os.path.join(REMOTE_STORAGE_PATH, file_name)
 
     if os.path.exists(local_file_path):
         try:
