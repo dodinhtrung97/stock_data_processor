@@ -7,6 +7,7 @@ certifi==2019.3.9
 chardet==3.0.4
 Click==7.0
 colorama==0.4.1
+croniter==0.3.30
 cycler==0.10.0
 decorator==4.4.0
 defusedxml==0.6.0
@@ -47,9 +48,12 @@ prometheus-client==0.6.0
 prompt-toolkit==2.0.9
 Pygments==2.4.0
 pyparsing==2.4.0
+pypiwin32==223
 pyrsistent==0.15.1
 python-dateutil==2.8.0
 pytz==2018.9
+pywin32==224
+pywinpty==0.5.5
 PyYAML==5.1
 pyzmq==18.0.1
 qtconsole==4.4.4
@@ -73,4 +77,3 @@ wcwidth==0.1.7
 webencodings==0.5.1
 Werkzeug==0.15.1
 widgetsnbextension==3.4.2
-gunicorn==19.9.0
