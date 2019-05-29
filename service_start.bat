@@ -1,10 +1,14 @@
 @echo off
+cd %0\..
 
 set PWD=%cd%
 set DEFAULT_SERVICE_LOG_DIRECTORY_NAME=logs
 set SERVICE_NAME=Scheduled Data Collector
 
 set SERVICE_LOG_PATH=%PWD%\%DEFAULT_SERVICE_LOG_DIRECTORY_NAME%
+
+echo Using default .\logs directory for service logging
+if not exist %SERVICE_LOG_PATH% call md %SERVICE_LOG_PATH%
 
 echo INFO: Installing pip dependencies
 call pip install -r requirements.txt
