@@ -108,7 +108,8 @@ class scrapper:
                                   'direct': direct_headline,
                                   'score': score if self.require_sentiment else None}
 
-            headline_list.append(headline_date_dict)
+            if publish_date_epoch: 
+                headline_list.append(headline_date_dict)
 
         return headline_list
 

@@ -156,7 +156,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         """
         ticker = ticker.upper()
         try:
-            client_portfolios[ticker].append(client_id)
+            client_portfolios[ticker].add(client_id)
             LOGGER.info("Added {} to list of {} subscribers".format(client_id, ticker))
  
         except KeyError as e:
@@ -167,5 +167,5 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             raise KeyError
  
         except Exception as e:
-            LOGGER.info("Failed to add {} to list of {} subscribers".format(client_id, ticker))
+            LOGGER.info("Failed to add {} to list of {} subscribers. Exception follows {}".format(client_id, ticker, e))
             raise Exception

@@ -1,15 +1,14 @@
 version: '3'
 services:
   api:
-    image: trade:v1
+    image: trade:v2
     ports:
      - "5000:5000"
     volumes:
-     - C:/Trung/Projects/BigData/trade_advisor/data:/app/data/local
-     - //hc-ut40957c/Users/OYT1HC/Project/data_collector_test:/app/data/remote
+     - C:/Trung/Projects/BigData/trade_advisor/data:/app/data
     command: api
   ws:
-    image: trade:v1
+    image: trade:v2
     ports:
      - "10005:10005"
     command: ws

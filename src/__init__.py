@@ -4,7 +4,7 @@ from .web_scrapper.utils.utils import *
 from .web_scrapper.websocket.ws_server import WSHandler, WSServer
 
 # Setup logging config
-setup_logging_with_config('logging.yaml')
+setup_server_logging()
 SERVER_CONFIG = get_server_config()
 LOGGER = logging.getLogger(__name__)
 

@@ -43,15 +43,14 @@ class customTime:
                 if "yesterday" in self.__arbitrary_time.lower():
                     date_time.replace(day=date_time.day - 1)
             except Exception as e:
-                date_time = datetime.datetime.now()
-                self.LOGGER.error("Failed to parse arbitrary time: {}. Exception {}. Assume is recent news".format(self.__arbitrary_time, e))
+                date_time = None
+                self.LOGGER.error("Failed to parse arbitrary time: {}. Exception {}. Assume is None".format(self.__arbitrary_time, e))
         except Exception as e:
-            date_time = datetime.datetime.now()
-            self.LOGGER.error("Failed to parse arbitrary time: {}. Exception {}. Assume is recent news".format(self.__arbitrary_time, e))
+            date_time = None
+            self.LOGGER.error("Failed to parse arbitrary time: {}. Exception {}. Assume is None".format(self.__arbitrary_time, e))
 
-
-        self.epoch_time = date_time.timestamp()
-        return date_time.timestamp()
+        self.epoch_time = date_time.timestamp() if date_time is not None else None
+        return self.epoch_time
 
     def parse_arbitrary_time_custom(self):
         """
