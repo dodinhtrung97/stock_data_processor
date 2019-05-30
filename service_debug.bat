@@ -15,6 +15,4 @@ call pip install -r requirements.txt
 
 echo INFO: Starting %SERVICE_NAME% service with logs at %SERVICE_LOG_PATH%
 call python src\data_collector_service.py install
-call python src\data_collector_service.py start --log_dir=%SERVICE_LOG_PATH%
-
-echo INFO: Service %SERVICE_NAME% started
+start cmd /k python src\data_collector_service.py debug --log_dir=%SERVICE_LOG_PATH%

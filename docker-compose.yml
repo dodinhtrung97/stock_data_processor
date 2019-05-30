@@ -5,8 +5,7 @@ services:
     ports:
      - "5000:5000"
     volumes:
-     - C:/Trung/Projects/BigData/trade_advisor/data:/app/data/local
-     - //hc-ut40957c/Users/OYT1HC/Project/data_collector_test:/app/data/remote
+     - C:/Trung/Projects/BigData/trade_advisor/data:/app/data
     command: api
   ws:
     image: trade:v1
