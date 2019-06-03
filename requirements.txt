@@ -48,9 +48,12 @@ prometheus-client==0.6.0
 prompt-toolkit==2.0.9
 Pygments==2.4.0
 pyparsing==2.4.0
+pypiwin32==223
 pyrsistent==0.15.1
 python-dateutil==2.8.0
 pytz==2018.9
+pywin32==224
+pywinpty==0.5.5
 PyYAML==5.1
 pyzmq==18.0.1
 qtconsole==4.4.4

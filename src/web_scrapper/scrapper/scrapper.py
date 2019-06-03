@@ -192,7 +192,7 @@ class scrapper:
         Check if time since article publish is within desired time range
         """
         current_time = time.time()
-        return float(self.within_hours) >= (current_time - publish_time)/3600
+        return float(self.within_hours) >= (current_time - publish_time)/3600 if publish_time is not None else None
 
     def is_known_news_source(self):
         """
