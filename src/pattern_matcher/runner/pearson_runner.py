@@ -47,5 +47,5 @@ class PearsonRunner(Runner):
         # take the top results
         top_results = results[:top]
 
-        return results
-        #return self.convert_to_json(ticker, pattern_close_values, pattern_date_values, top_results)
+        #return results
+        return self.convert_to_json(ticker, pattern_close_values, pattern_date_values, top_results)
