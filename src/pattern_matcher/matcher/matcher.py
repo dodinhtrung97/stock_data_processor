@@ -40,9 +40,9 @@ class SpearmanMatcher(Matcher):
             i = i + steps
         # return max value and data from dataframe accordingly
         match_close_result = dataframe.iloc[fr:to, 1].to_list()
-        match_date_result = dataframe.iloc[[fr,to], 0].to_list()
+        match_date_result = dataframe.iloc[fr:to, 0].to_list()
         predict_close_result = dataframe.iloc[to:to + days_forward, 1].to_list()
-        predict_date_result = dataframe.iloc[[to,to + days_forward], 0].to_list()
+        predict_date_result = dataframe.iloc[to:to + days_forward, 0].to_list()
         
         stop = time.time() - base
         return ticker, max, (match_close_result, match_date_result, predict_close_result, predict_date_result), (start, stop), dataframe.shape[0]
@@ -72,9 +72,9 @@ class PearsonMatcher(Matcher):
             i = i + steps
         # return max value and data from dataframe accordingly
         match_close_result = dataframe.iloc[fr:to, 1].to_list()
-        match_date_result = dataframe.iloc[[fr,to], 0].to_list()
+        match_date_result = dataframe.iloc[fr:to, 0].to_list()
         predict_close_result = dataframe.iloc[to:to + days_forward, 1].to_list()
-        predict_date_result = dataframe.iloc[[to,to + days_forward], 0].to_list()
+        predict_date_result = dataframe.iloc[to:to + days_forward, 0].to_list()
         
         stop = time.time() - base
         return ticker, max, (match_close_result, match_date_result, predict_close_result, predict_date_result), (start, stop), dataframe.shape[0]

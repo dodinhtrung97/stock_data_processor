@@ -28,8 +28,7 @@ class SpearManRunner(Runner):
         # load pattern data
         pattern_dataframe = self._CACHE_DATA[ticker]
         pattern_size = len(pattern_dataframe)
-        pattern_date = pattern_dataframe.iloc[pattern_size - days_back:pattern_size, 0].values
-        pattern_date_values = [pattern_date[1], pattern_date[-1]]
+        pattern_date_values = pattern_dataframe.iloc[pattern_size - days_back:pattern_size, 0].to_list()
         pattern_close_values = pattern_dataframe.iloc[pattern_size - days_back:pattern_size, 1].to_list()
 
         # create measurement job
@@ -45,5 +44,5 @@ class SpearManRunner(Runner):
         # take the top results
         top_results = results[:top]
 
-        return results
-        # return self.convert_to_json(ticker, pattern_close_values, pattern_date_values, top_results)
+        # return results
+        return self.convert_to_json(ticker, pattern_close_values, pattern_date_values, top_results)
