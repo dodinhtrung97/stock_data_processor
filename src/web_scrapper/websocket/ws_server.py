@@ -37,9 +37,22 @@ class WSServer(tornado.web.Application):
             result = automated_scrapper.run(logging=logging)
             
             for ticker in result.keys():
-                if not len(result[ticker]) > 0: continue
-
-                response = json.dumps({ticker: result[ticker]})
+                if not len(result[ticker]) > 0: 
+                    response = {
+                                ticker: {
+                                    "DUMMY_SOURCE": [
+                                      {
+                                        "url": "https://doesnt.exist.com",
+                                        "headline": "Dummy Headline",
+                                        "date": 0.0,
+                                        "direct": False,
+                                        "score": "0"
+                                      },
+                                    ]}
+                                }
+                else:
+                    response = json.dumps({ticker: result[ticker]})
+    
                 try: [clients_address[client].write_message(response) for client in client_portfolios[ticker]]
                 except KeyError as e:   
                     LOGGER.info("No subscribers for {}, ignoring scrapped news...".format(ticker))

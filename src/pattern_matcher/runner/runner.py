@@ -48,8 +48,9 @@ class Runner():
                 'ticker': item[0],
                 'similarity': item[1],
                 'history': item[2][0],
-                'time': item[2][1],
-                'future': item[2][2]
+                'hitory_time': item[2][1],
+                'future': item[2][2],
+                'future_time': item[2][3]
             }
             i += 1
         return {

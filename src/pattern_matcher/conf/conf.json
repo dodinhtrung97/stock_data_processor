@@ -1,6 +1,6 @@
 {
     "input": {
-        "dir": "/app/data/matcher",
+        "dir": "D:\\Projects\\BigData\\TradeAdvisor-0.0.1\\data",
         "format": ".us.txt",
         "recursive": false
     },
