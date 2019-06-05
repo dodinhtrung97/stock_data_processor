@@ -5,7 +5,7 @@ import pandas as pd
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from fbprophet import Prophet
-from data_collector.utils.price_date import get_future_day
+from ...data_collector.utils.price_date import get_future_day
 
 class ProphetPredictor:
     """

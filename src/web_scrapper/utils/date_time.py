@@ -125,7 +125,7 @@ class customTime:
         if real_time_dict['minute'] < 0:
             real_time_dict['minute'] += 60
             real_time_dict['hour'] -= 1
-        if real_time_dict['hour'] <= 0:
+        if real_time_dict['hour'] < 0:
             real_time_dict['hour'] += 24
             real_time_dict['day'] -= 1
         if real_time_dict['day'] <= 0:

@@ -2,9 +2,9 @@ import logging
 import sys
 import os
 
-from data_collector.collector.data_collector import DataCollector
-from data_collector.utils.utils import get_ticker_list
-from data_collector.runner.runner import Runner
+from ...data_collector.collector.data_collector import DataCollector
+from ...data_collector.utils.utils import get_ticker_list
+from ...data_collector.runner.runner import Runner
 from ..predictor.linear_regression_predictor import LinearRegPredictor
 from flask import Blueprint, abort, request, jsonify, Response
 from flask_restful import reqparse
