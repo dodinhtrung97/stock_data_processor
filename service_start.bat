@@ -18,4 +18,4 @@ echo INFO: Starting %SERVICE_NAME% service with logs at %SERVICE_LOG_PATH%
 call python %SERVICE_RUNNER_PATH% install
 
 echo INFO: Service %SERVICE_NAME% started
-start "Trade Advisor's Data Collecter Service" cmd /k python src\data_collector_service.py start --log_dir=%SERVICE_LOG_PATH%
+call python %SERVICE_RUNNER_PATH% start --log_dir=%SERVICE_LOG_PATH%
