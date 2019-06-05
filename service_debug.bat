@@ -1,7 +1,6 @@
 @echo off
 
 set PWD=%~dp0
-echo %PWD%
 set DEFAULT_SERVICE_LOG_DIRECTORY_NAME=logs
 set SERVICE_NAME=Scheduled Data Collector
 
@@ -19,4 +18,4 @@ echo INFO: Starting %SERVICE_NAME% service with logs at %SERVICE_LOG_PATH%
 call python %SERVICE_RUNNER_PATH% install
 
 echo INFO: Service %SERVICE_NAME% started
-start cmd /k python %SERVICE_RUNNER_PATH% debug --log_dir=%SERVICE_LOG_PATH%
+start "Trade Advisor's Data Collecter Service" cmd /k python %SERVICE_RUNNER_PATH% debug --log_dir=%SERVICE_LOG_PATH%
