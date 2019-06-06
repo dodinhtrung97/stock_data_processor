@@ -2,6 +2,7 @@ import time, sys, os
 import logging
 import glob
 import numpy as np
+import pandas as pd
 from ..loader import csv_loader as loader
 
 class Runner():
@@ -24,9 +25,9 @@ class Runner():
         self._TICKERS = [os.path.splitext(os.path.basename(file))[0].split('.')[0] for file in files]
     
     def init_runner(self, conf):
-        if conf['input']['dir'] and conf['input']['format']:
+        if conf['input']['dir']:
             self._DATA_PATH = conf['input']['dir']
-            self._FORMAT =  conf['input']['format']
+            self._FORMAT = conf['input']['format']
             self._CONCURRENCY = int(conf['measurement']['concurrency'])
         else:
             raise Exception('Unable to read conf: {}'.format('input'))
@@ -60,10 +61,12 @@ class Runner():
 
     def load_data(self):
         self.logger.info('Loading stock data ...')
-        # self._CACHE_DATA = {ticker: loader.load(self._DATA_PATH + '/' + ticker + self._FORMAT, delimiter=',', usecols=['Date', 'Close']) for ticker in self._TICKERS}
         for ticker in self._TICKERS:
             try:
-                self._CACHE_DATA[ticker] = loader.load(self._DATA_PATH + '/' + ticker + self._FORMAT, delimiter=',', usecols=['Date', 'Close'])
+                df = loader.load(self._DATA_PATH + '/' + ticker + self._FORMAT, delimiter=',', usecols=['date', 'close'])
+                df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d').astype('int64')
+                df['date'] = df['date'] // int(10 ** 6)
+                self._CACHE_DATA[ticker] = df
             except Exception as e:
                 self.logger.error('Failed to load data with ticker: %s. Exception follows. %s', ticker, e)
                 raise Exception('Failed to load data: {0}. Exception follows. {1}'.format(ticker, e))
