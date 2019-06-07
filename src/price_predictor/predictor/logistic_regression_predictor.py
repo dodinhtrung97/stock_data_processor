@@ -10,7 +10,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import mean_absolute_error
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from data_collector.utils.price_date import get_future_day
+from ...data_collector.utils.price_date import get_future_day
 from ..utils.utils import get_predictor_config
 
 class LogisticRegPredictor:

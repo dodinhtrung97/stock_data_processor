@@ -5,7 +5,7 @@ services:
     ports:
      - "5000:5000"
     volumes:
-     - D:/Projects/BigData/TradeAdvisor-0.0.1/TradeAdvisor/data/local:/app/data
+     - D:/Projects/BigData/TradeAdvisor-0.0.1/trade_advisor/data/local:/app/data
     command: api
   ws:
     image: trade:v1
