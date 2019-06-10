@@ -1,7 +1,7 @@
 {
     "input": {
-        "dir": "/app/data/local",
-        "format": ".us.txt",
+        "dir": "D:\\Projects\\BigData\\TradeAdvisor-0.0.1\\trade_advisor\\data\\local",
+        "format": "",
         "recursive": false
     },
     "measurement": {

@@ -6,6 +6,7 @@ from iexfinance.stocks import get_historical_data
 from datetime import datetime
 from ..utils.price_date import *
 from ..utils.data_io import *
+from .data_loader import DataLoader
 from requests.exceptions import ConnectionError
 
 class DataCollector:
@@ -89,32 +90,6 @@ class DataCollector:
 
         return df
 
-    @classmethod
-    def load_data_for_ticker(self, ticker_symbol, use_local_storage):
-        """
-        Load data for ticker
-            
-        Parameters
-        ----------
-        ticker_symbol (String): Stock code, eg: AAPL for Apple Inc.
-
-        Returns
-        ----------
-        df (DataFrame): Columns['open', 'high', 'low', 'close', 'volume'], index['date']
-        """
-        ticker_symbol = ticker_symbol.upper()
-        DataCollector.LOGGER.debug("Loading data for {}".format(ticker_symbol))
-
-        df = load_dataframe_from_csv(file_name=ticker_symbol, 
-                                     use_local_storage=use_local_storage)
-
-        if not df.empty:
-            df.index = df['date']
-            df = df.drop(['date'], 1)
-            DataCollector.LOGGER.debug("Load successfully")
-
-        return df
-
     def save_data_for_ticker(self, df, ticker_symbol):
         """
         Save data for ticker
@@ -151,9 +126,8 @@ class DataCollector:
         ticker_symbol (String): Stock code, eg: AAPL for Apple Inc.
         """
         ticker_symbol = ticker_symbol.upper()
-
-        df = self.load_data_for_ticker(ticker_symbol=ticker_symbol, 
-                                        use_local_storage=self.use_local_storage)
+        df = DataLoader(ticker_symbol=ticker_symbol,
+                        use_local_storage=self.use_local_storage).load_df()
 
         if not df.empty:
             if not data_is_lastest(df):

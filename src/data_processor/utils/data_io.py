@@ -72,7 +72,7 @@ def load_dataframe_from_csv(file_name, use_local_storage):
     """    
     df = pd.DataFrame()
     file_path = os.path.join(LOCAL_STORAGE_PATH, file_name) if use_local_storage else os.path.join(REMOTE_STORAGE_PATH, file_name)
-
+    print(file_path)
     if os.path.exists(file_path):
         try:
             df = pd.read_csv(file_path)
