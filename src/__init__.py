@@ -17,9 +17,10 @@ def create_app():
     app.register_blueprint(scrapper_controller, url_prefix='/api/v0/scraper')
     from src.price_predictor.controller.predictor_controller import predictor_controller
     app.register_blueprint(predictor_controller, url_prefix='/api/v0/predictor')
+    from src.data_processor.controller.processor_controller import processor_controller
+    app.register_blueprint(processor_controller, url_prefix='/api/v0/processor')
 
     return app
-
 
 def create_ws():
     return WSServer([('/news', WSHandler)])

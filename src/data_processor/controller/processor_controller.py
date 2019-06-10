@@ -2,16 +2,16 @@ import logging
 import sys
 import os
 
-from ..collector.data_collector import DataCollector
+from ..processor.data_loader import DataLoader
 from ..runner.runner import Runner
 from flask import Blueprint, abort, request, jsonify, Response
 from flask_restful import reqparse
 
-collector_controller = Blueprint('collector_controller', __name__, template_folder='controller')
+processor_controller = Blueprint('processor_controller', __name__, template_folder='controller')
 LOGGER = logging.getLogger(__name__)
 
-@collector_controller.route('/collect', methods=['GET'])
-def collect_url():
+@processor_controller.route('/collect', methods=['GET'])
+def collect_data():
     """
     Prase optional arguments in request url if exist
     Only for testing
@@ -26,3 +26,17 @@ def collect_url():
     response = jsonify({"status": "Collect successfully!"}), 200
 
     return response
+
+@processor_controller.route('/load/<ticker_symbol>', methods=['GET'])
+def load_data(ticker_symbol):
+    """
+    Prase optional arguments in request url if exist
+    Only for testing
+    """
+    result_set = DataLoader(ticker_symbol).load_json_data()
+
+    response = jsonify({'ticker': ticker_symbol,
+                        'resultSet': result_set}), 200
+
+    return response
+

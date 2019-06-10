@@ -11,7 +11,7 @@ import datetime
 import os
 
 from web_scrapper.utils.utils import *
-from data_collector.runner.runner import Runner as DataCollector
+from data_processor.runner.runner import Runner as DataCollector
 
 class DataCollectorService(win32serviceutil.ServiceFramework):
     LOGGER = logging.getLogger(__name__)

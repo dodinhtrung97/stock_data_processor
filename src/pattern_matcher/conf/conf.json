@@ -1,7 +1,7 @@
 {
     "input": {
         "dir": "/app/data/",
-        "format": ".us.txt",
+        "format": "",
         "recursive": false
     },
     "measurement": {

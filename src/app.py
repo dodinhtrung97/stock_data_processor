@@ -23,7 +23,7 @@ class backendServer():
         self.start_scrapper_controller = bool(args.scrapper)
         self.start_pattern_matcher_controller = bool(args.matcher)
         self.start_predictor_controller = bool(args.predictor)
-        self.start_collector_controller = bool(args.collector)
+        self.start_processor_controller = bool(args.processor)
         self.logging = bool(args.logging)
 
         self.__controller_dict = {}
@@ -96,7 +96,7 @@ class backendServer():
         from web_scrapper.controller.scrapper_controller import scrapper_controller
         from pattern_matcher.controller.pattern_matcher_controller import pattern_matcher_controller
         from price_predictor.controller.predictor_controller import predictor_controller
-        from data_collector.controller.collector_controller import collector_controller
+        from data_processor.controller.processor_controller import processor_controller
 
         # Ignore 1st element of locals() 'self'
         controller_dict = dict.fromkeys([key for key in locals() if key != 'self'], dict())
@@ -138,7 +138,7 @@ if __name__ == "__main__":
     parser.add_argument('--scrapper', metavar='SCRAPPER', default=1, type=int, help='Determine if scraper module will be started')
     parser.add_argument('--matcher', metavar='MATCHER', default=1, type=int, help='Determine if pattern matcher module will be started')
     parser.add_argument('--predictor', metavar='PREDICTOR', default=1, type=int, help='Determine if predictor module will be started')
-    parser.add_argument('--collector', metavar='COLLECTOR', default=1, type=int, help='Determine if collector module will be started')
+    parser.add_argument('--processor', metavar='PROCESSOR', default=1, type=int, help='Determine if processor module will be started')
     parser.add_argument('--logging', metavar='LOGGING', default=0, type=int, help='Log scrapping outputs into logs/*.json')
     args = parser.parse_args()
 

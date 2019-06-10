@@ -2,7 +2,7 @@ import logging
 import threading
 import time
 
-from ..collector.data_collector import DataCollector
+from ..processor.data_collector import DataCollector
 from ..utils.utils import get_ticker_list
 
 class Runner():
