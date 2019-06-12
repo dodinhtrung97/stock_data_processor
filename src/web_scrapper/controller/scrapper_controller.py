@@ -47,7 +47,6 @@ def get_company_name_by_ticker_symbol(ticker_symbol):
 
     if company_name is not None:
         return jsonify({'name': company_name}), 200
-    LOGGER.error("Bad Request")
     return jsonify({"error": "Bad Request"}), 400
 
 @scrapper_controller.route('/get_company_suggestion/<ticker_symbol>', methods=['GET'])
@@ -56,5 +55,4 @@ def get_company_sugesstion_by_ticker_symbol(ticker_symbol):
 
     if suggestions is not None:
         return jsonify({'ResultSet': suggestions}), 200
-    LOGGER.error("Bad Request")
     return jsonify({"error": "Bad Request"}), 400
