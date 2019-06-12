@@ -23,9 +23,7 @@ def collect_data():
     collector_runner = Runner(num_threads, use_local_storage)
     collector_runner.run()
 
-    response = jsonify({"status": "Collect successfully!"}), 200
-
-    return response
+    return jsonify({"status": "Collect successfully!"}), 200
 
 @processor_controller.route('/load/<ticker_symbol>', methods=['GET'])
 def load_data(ticker_symbol):
@@ -35,8 +33,9 @@ def load_data(ticker_symbol):
     """
     result_set = DataLoader(ticker_symbol).load_json_data()
 
-    response = jsonify({'ticker': ticker_symbol,
+    if result_set:
+        return jsonify({'ticker': ticker_symbol,
                         'resultSet': result_set}), 200
+    return jsonify({"error": "Bad Request"}), 400
 
-    return response
 

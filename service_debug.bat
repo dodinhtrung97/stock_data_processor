@@ -1,6 +1,7 @@
 @echo off
 
 set PWD=%~dp0
+
 set DEFAULT_SERVICE_LOG_DIRECTORY_NAME=logs
 set SERVICE_NAME=Scheduled Data Collector
 
