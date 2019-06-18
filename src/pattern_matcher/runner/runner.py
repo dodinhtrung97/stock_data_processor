@@ -47,6 +47,8 @@ class Runner():
         history_time_set, future_time_set, matches, day_no = {}, {}, {}, 1
         for day_no, time in enumerate(origin['time']):
             history_time_set[day_no+1] = [time,]
+        # 1st (arbitrary) item in prediction, [2][3] => future_time
+        for day_no, _ in enumerate(predict[0][2][3]):
             future_time_set[day_no+1] = []
 
         for day_no, item in enumerate(predict):
