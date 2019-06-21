@@ -23,7 +23,7 @@ class SpearManRunner(Runner):
         self.logger.info('Run pattern matching with ticker: %s - measurement: %s', ticker, self.__matcher)
         if ticker not in self._TICKERS:
             self.logger.info('Unsupported ticker exception: %s', ticker)
-            return 'Failed to find ticker: {0}. Please provide the correct ticker'.format(ticker)
+            raise NameError('Failed to find ticker: {0}. Please provide the correct ticker'.format(ticker))
 
         # load pattern data
         pattern_dataframe = self._CACHE_DATA[ticker]
