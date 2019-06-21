@@ -47,4 +47,9 @@ def match():
     days_back = int(params['days_back'])
     days_forward = int(params['days_forward'])
     top = int(params['top'])
-    return jsonify(runner.run(ticker, days_back, days_forward, top))
+
+    try:
+        return jsonify(runner.run(ticker, days_back, days_forward, top))
+    except NameError as e:
+        logger.error("Data for ticker {} does not exist".format(ticker))
+        return jsonify({"error": "Data not found".format(ticker)}), 400

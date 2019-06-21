@@ -36,16 +36,29 @@ class Runner():
         pass
 
     def convert_to_json(self, ticker, pattern_close_values, pattern_date_values, predict):
-        # Initilize origin
+        # Initialize origin
         origin = {
             'ticker': ticker,
             'values': pattern_close_values,
             'time': pattern_date_values
         }
-        # Initilize matches
-        matches, i = {}, 1
-        for item in predict:
-            matches[i] = {
+
+        # Initialize matches
+        history_time_set, future_time_set, matches, day_no = {}, {}, {}, 1
+        for day_no, time in enumerate(origin['time']):
+            history_time_set[day_no+1] = [time,]
+        # 1st (arbitrary) item in prediction, [2][3] => future_time
+        for day_no, _ in enumerate(predict[0][2][3]):
+            future_time_set[day_no+1] = []
+
+        for day_no, item in enumerate(predict):
+            # Update time set
+            for index, history_time in enumerate(item[2][1]):
+                history_time_set[index+1].append(history_time)
+            for index, future_time in enumerate(item[2][3]):
+                future_time_set[index+1].append(future_time)
+
+            matches[day_no+1] = {
                 'ticker': item[0],
                 'similarity': item[1],
                 'history': item[2][0],
@@ -53,9 +66,10 @@ class Runner():
                 'future': item[2][2],
                 'future_time': item[2][3]
             }
-            i += 1
         return {
             'origin': origin,
+            'history_time_set': history_time_set,
+            'future_time_set': future_time_set,
             'matches': matches
         }
 
