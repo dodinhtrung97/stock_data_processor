@@ -1,5 +1,7 @@
 import logging
 import time
+import json
+import requests
 
 from iexfinance.stocks import Stock
 from iexfinance.stocks import get_historical_data
@@ -8,6 +10,9 @@ from ..utils.price_date import *
 from ..utils.data_io import *
 from .data_loader import DataLoader
 from requests.exceptions import ConnectionError
+from ..utils.utils import get_collector_config
+
+CONFIG = get_collector_config()
 
 class DataCollector:
     """
@@ -34,34 +39,10 @@ class DataCollector:
         if self.period < 1:
             raise ValueError("Parameter 'period' must be greater than 0")
 
-    def clean_data(self, df):
-        """
-        Clean data in dataframe before using for training model or predicting
-            
-        Parameters
-        ----------
-        df (DataFrame)
-
-        Returns
-        ----------
-        df (DataFrame): Columns['open', 'high', 'low', 'close', 'volume'], index['date']
-        """
-        df = df.dropna()
-        # Get necessary columns: [open, close, high, low, volume]
-        df.columns = map(str.lower, df)
-        necessary_columns = ['open', 'high', 'low', 'close', 'volume']
-
-        if set(necessary_columns).issubset(set(df.columns.to_list())):
-            df = df[necessary_columns]
-        else:
-            raise ValueError("Missing columns from dataFrame")
-
-        return df
-
     def collect_data_for_ticker(self, ticker_symbol, start=None):
         """
         Collect data for ticker
-            
+
         Parameters
         ----------
         ticker_symbol (String): Stock code, eg: AAPL for Apple Inc.
@@ -71,23 +52,35 @@ class DataCollector:
         df (DataFrame): Columns['open', 'high', 'low', 'close', 'volume'], index['date']
         """
         ticker_symbol = ticker_symbol.upper()
-        df = None
+        df = pd.DataFrame()
+
+        if start is None:
+            start = datetime.now() - relativedelta(years=self.period)
+
+        url =  'https://api.tiingo.com/tiingo/daily/'+ticker_symbol+'/prices?startDate='+str(start)+'&token='+CONFIG["TOKEN"]["TIINGO_TOKEN"]
+
+        self.LOGGER.debug("Collecting data for {} for {} year(s)".format(ticker_symbol, self.period))
         
         try:
-            if start:
-                self.LOGGER.debug("Collecting data for {} from {}".format(ticker_symbol, start))
-                df = get_historical_data(ticker_symbol, start=start, end=datetime.now(), output_format='pandas')
-            else:
-                self.LOGGER.debug("Collecting data for {} for {} year(s)".format(ticker_symbol, self.period))
-                df = get_historical_data(ticker_symbol, start=(datetime.now() - relativedelta(years=self.period)), end=datetime.now(), output_format='pandas')
+            response = requests.get(url)
+            
+            if response.ok: 
+                bytes_data = response.content
+                str_data =str(bytes_data,'utf-8')
+                json_data = json.loads(str_data)
+                df = pd.DataFrame.from_dict(json_data, orient='columns')
+
+                if not df.empty:
+                    df['date'] = pd.to_datetime(df['date'])
+                    df['date'] = df['date'].dt.strftime('%Y-%m-%d')
+                    df.index = df['date']
+                    df = df[['open', 'high', 'low', 'close', 'volume']]
+
+                    self.LOGGER.debug("Collect successfully!")
+
         except ConnectionError as e:
-            self.LOGGER.error("Failed to retrieve data for ticker {} from iexfinance, please check your internet connection. Exception follows. {}".format(ticker_symbol, e))
             raise Exception("Failed to retrieve data for ticker {} from iexfinance, please check your internet connection. Exception follows. {}".format(ticker_symbol, e))
         
-        self.LOGGER.debug("Cleaning data for {}".format(ticker_symbol))
-
-        df = self.clean_data(df)
-
         return df
 
     def save_data_for_ticker(self, df, ticker_symbol):
