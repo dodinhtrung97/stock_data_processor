@@ -9,7 +9,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from data_processor.utils.price_date import get_future_day
+from ...data_processor.utils.price_date import get_future_day
 from ..utils.utils import get_predictor_config
 
 CONFIG = get_predictor_config()

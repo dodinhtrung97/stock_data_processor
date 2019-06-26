@@ -1,5 +1,6 @@
+.vs/
 .vscode/
-env/
+trade_v1/
 build/
 dist/
 news_headline_scrapper.egg-info/

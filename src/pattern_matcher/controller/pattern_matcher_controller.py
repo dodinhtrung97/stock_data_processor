@@ -6,7 +6,7 @@ import threading, schedule, time
 from ..runner.spearman_runner import SpearManRunner
 from ..runner.pearson_runner import PearsonRunner
 from ..conf.app_conf import *
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 
 logger = logging.getLogger(__name__)
 pattern_matcher_controller = Blueprint('pattern_matcher_controller', __name__, template_folder='controller')
@@ -47,4 +47,9 @@ def match():
     days_back = int(params['days_back'])
     days_forward = int(params['days_forward'])
     top = int(params['top'])
-    return json.dumps(runner.run(ticker, days_back, days_forward, top))
+
+    try:
+        return jsonify(runner.run(ticker, days_back, days_forward, top))
+    except NameError as e:
+        logger.error("Data for ticker {} does not exist".format(ticker))
+        return jsonify({"error": "Data not found".format(ticker)}), 400

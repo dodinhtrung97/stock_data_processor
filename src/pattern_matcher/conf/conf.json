@@ -1,6 +1,6 @@
 {
     "input": {
-        "dir": "D:\\Projects\\BigData\\TradeAdvisor-0.0.1\\trade_advisor\\data\\local",
+        "dir": "/app/data/",
         "format": "",
         "recursive": false
     },
