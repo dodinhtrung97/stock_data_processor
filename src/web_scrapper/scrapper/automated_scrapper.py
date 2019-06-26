@@ -1,6 +1,5 @@
 import time
 import os
-import simplejson as json
 import logging
 import configparser
 import json

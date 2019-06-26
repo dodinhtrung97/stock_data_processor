@@ -100,6 +100,7 @@ class scrapper:
 
             # Ignore headlines outside of desired hour frame
             if not self.is_within_hours(publish_date_epoch):
+                self.LOGGER.info("{}, {}".format(headline, publish_date))
                 continue
 
             headline_date_dict = {'url': url,
