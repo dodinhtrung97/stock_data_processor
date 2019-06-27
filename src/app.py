@@ -62,9 +62,10 @@ class backendServer():
             url_prefix = self.__controller_dict[controller]['url_prefix']
 
             self.APP.register_blueprint(controller_name, url_prefix=url_prefix)
-
-        self.APP.run(host=self.SERVER_CONFIG['SERVER']['HOST'], 
-                     port=self.SERVER_CONFIG['SERVER']['PORT'], 
+        
+        import os
+        self.APP.run(host='0.0.0.0',
+                     port=os.environ["PORT"] if os.environ["PORT"] else 5000,
                      threaded=True,
                      debug=False)
 

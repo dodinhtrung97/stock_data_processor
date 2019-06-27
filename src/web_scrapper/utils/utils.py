@@ -11,17 +11,17 @@ def setup_server_logging(default_level='DEBUG'):
     Set server logging config
     See: conf/logging.yaml
     """
-    path = os.path.join(DIR_PATH, '..', '..', '..', 'conf', 'logging.yaml')
-    env_key = os.getenv('LOG_CFG', None)
+    # path = os.path.join(DIR_PATH, '..', '..', '..', 'conf', 'logging.yaml')
+    # env_key = os.getenv('LOG_CFG', None)
 
-    if env_key: path = env_key
+    # if env_key: path = env_key
 
-    if os.path.exists(path):
-        with open(path, 'rt') as f:
-            config = yaml.safe_load(f.read())
-        logging.config.dictConfig(config)
-    else:
-        logging.basicConfig(level=default_level)
+    # if os.path.exists(path):
+    #     with open(path, 'rt') as f:
+    #         config = yaml.safe_load(f.read())
+    #     logging.config.dictConfig(config)
+    # else:
+    #     logging.basicConfig(level=default_level)
 
 def setup_service_logging(log_dir_path, default_level='DEBUG'):
     """

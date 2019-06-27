@@ -35,8 +35,8 @@ def save_dataframe_to_csv(df, file_name, use_local_storage):
     except IOError as e:
         raise Exception("Cannot save dataframe to {}.csv. Exception follows. {}".format(file_path, e))
 
-    if not use_local_storage:
-        copy_local_file_to_remote_storage(file_name)
+    # if not use_local_storage:
+    #     copy_local_file_to_remote_storage(file_name)
 
 def append_dataframe_to_csv(df, file_name, use_local_storage):
     """
@@ -55,8 +55,8 @@ def append_dataframe_to_csv(df, file_name, use_local_storage):
         except IOError as e:
             raise Exception("Cannot append dataframe to {}.csv. Exception follows. {}".format(file_name, e))
 
-    if not use_local_storage:
-        copy_local_file_to_remote_storage(file_name)
+    # if not use_local_storage:
+    #     copy_local_file_to_remote_storage(file_name)
 
 def load_dataframe_from_csv(file_name, use_local_storage):
     """

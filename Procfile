@@ -1,1 +1,1 @@
-trade_api: python src/app.py
+web: python -m textblob.download_corpora & python src/app.py
