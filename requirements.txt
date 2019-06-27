@@ -12,5 +12,4 @@ pandas==0.24.1
 scipy==1.2.1
 scikit-learn==0.20.3
 iexfinance==0.4.2
-pypiwin32==223
 croniter==0.3.30
